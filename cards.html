@@ -1,0 +1,167 @@
+﻿<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="description" content="صمم بطاقة تهنئة رمضان باسمك وشاركها مع أحبابك" />
+    <title>رمضان كريم | بطاقات التهنئة</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="رمضان كريم">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💌</text></svg>" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&family=Reem+Kufi:wght@400;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/share-utils.js?v=v_spa_fixed_v19"></script>
+    <script src="js/main.js?v=v_spa_fixed_v19"></script>
+    <script src="js/notifications.js?v=v_spa_fixed_v19"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+    <link rel="stylesheet" href="css/style.css?v=v_spa_fixed_v19">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ramadan-gold': '#fbbf24',
+                        'ramadan-dark': '#0f172a',
+                        'ramadan-green': '#064e3b',
+                    },
+                    fontFamily: {
+                        'amiri': ['Amiri', 'serif'],
+                        'tajawal': ['Tajawal', 'sans-serif'],
+                        'kufi': ['Reem Kufi', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-ramadan-dark text-white font-tajawal overflow-x-hidden">
+
+    <!-- Nav Placeholder -->
+    <div id="nav-placeholder"></div>
+    <div id="page-content-wrapper">
+        <!-- Hero Section -->
+        <section class="relative pt-32 pb-12 overflow-hidden">
+            <div class="absolute inset-0 stars opacity-40"></div>
+            <div class="absolute inset-0 islamic-pattern opacity-10"></div>
+
+            <div class="container mx-auto px-4 relative z-10 text-center">
+                <h1 class="text-3xl md:text-5xl font-bold font-amiri text-ramadan-gold mb-4">
+                    صمم بطاقة تهنئة رمضان باسمك
+                </h1>
+                <p class="text-gray-300 max-w-2xl mx-auto text-lg mb-8">
+                    أدخل اسمك واختر التصميم المناسب، واحصل على بطاقة تهنئة احترافية في ثوانٍ لمشاركتها مع الأهل
+                    والأصدقاء.
+                </p>
+
+                <!-- Card Designer Area -->
+                <div class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+
+                    <!-- Controls -->
+                    <div
+                        class="glass-effect p-6 rounded-2xl border border-ramadan-gold/20 order-2 lg:order-1 text-right">
+
+                        <div class="mb-6">
+                            <label class="block text-ramadan-gold font-bold mb-2">اكتب اسمك أو اسم من تحب:</label>
+                            <input type="text" id="userNameInput" placeholder="اكتب اسمك هنا..."
+                                class="w-full bg-black/30 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-ramadan-gold/50 transition-colors"
+                                oninput="updateCardPreview()">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-ramadan-gold font-bold mb-2">اختر التصميم:</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <button onclick="setCardTemplate('lantern')"
+                                    class="template-btn active ring-2 ring-ramadan-gold rounded-lg overflow-hidden border border-transparent hover:opacity-80 transition-all relative">
+                                    <div
+                                        class="aspect-[9/16] bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
+                                        <i class="fas fa-lantern text-amber-400 text-2xl"></i>
+                                    </div>
+                                    <div class="absolute bottom-0 w-full text-xs text-center bg-black/60 py-1">فانوس
+                                    </div>
+                                </button>
+
+                                <button onclick="setCardTemplate('mosque')"
+                                    class="template-btn rounded-lg overflow-hidden border border-gray-600 hover:border-ramadan-gold transition-all relative">
+                                    <div
+                                        class="aspect-[9/16] bg-gradient-to-br from-green-900 to-green-800 flex items-center justify-center">
+                                        <i class="fas fa-mosque text-green-300 text-2xl"></i>
+                                    </div>
+                                    <div class="absolute bottom-0 w-full text-xs text-center bg-black/60 py-1">مسجد
+                                    </div>
+                                </button>
+
+                                <button onclick="setCardTemplate('modern')"
+                                    class="template-btn rounded-lg overflow-hidden border border-gray-600 hover:border-ramadan-gold transition-all relative">
+                                    <div
+                                        class="aspect-[9/16] bg-gradient-to-br from-slate-100 to-white flex items-center justify-center">
+                                        <i class="fas fa-moon text-indigo-600 text-2xl"></i>
+                                    </div>
+                                    <div class="absolute bottom-0 w-full text-xs text-center bg-black/60 py-1">مودرن
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button onclick="downloadCard()"
+                            class="w-full bg-ramadan-gold text-ramadan-dark font-bold py-3 rounded-xl hover:bg-white transition-all shadow-lg shadow-ramadan-gold/20 mb-3 flex items-center justify-center gap-2">
+                            <i class="fas fa-download"></i> تحميل البطاقة
+                        </button>
+
+                        <button onclick="shareCard()"
+                            class="w-full bg-white/10 text-white font-bold py-3 rounded-xl hover:bg-white/20 transition-all border border-white/20 flex items-center justify-center gap-2">
+                            <i class="fas fa-share-alt"></i> مشاركة البطاقة
+                        </button>
+
+                    </div>
+
+                    <!-- Preview -->
+                    <div class="order-1 lg:order-2 flex justify-center">
+                        <div
+                            class="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-gray-800 bg-gray-900">
+                            <!-- Canvas Container -->
+                            <canvas id="cardCanvas" width="1080" height="1920"
+                                class="w-full max-w-[350px] h-auto"></canvas>
+
+                            <div id="loadingOverlay"
+                                class="absolute inset-0 bg-black/80 flex flex-col items-center justify-center hidden">
+                                <div class="loader mb-4"></div>
+                                <p class="text-sm text-gray-400">جاري الإعداد...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script src="js/cards.js"></script>
+    <script>
+        // Initial Load
+        document.addEventListener('DOMContentLoaded', () => {
+            injectNav('cards');
+            injectFooter();
+            // Small delay to ensure fonts loaded
+            setTimeout(() => {
+                initCardDesigner();
+            }, 500);
+        });
+    </script>
+    <div id="global-player"></div>
+</body>
+
+</html>
+

@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="رمضان كريم">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    <title>رمضان كريم | السيرة والأنبياء والصحابة</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/share-utils.js?v=v_spa_fixed_v19"></script>
+    <script src="js/main.js?v=v_spa_fixed_v19"></script>
+    <script src="js/notifications.js?v=v_spa_fixed_v19"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+    <link rel="stylesheet" href="css/style.css?v=v_spa_fixed_v19">
+    <style>
+        .tab-btn.active {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .timeline-line {
+            position: absolute;
+            right: 1.25rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #fbbf24, #f59e0b33);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            right: 0.75rem;
+            top: 1.5rem;
+            width: 0.6rem;
+            height: 0.6rem;
+            border-radius: 50%;
+            background: #fbbf24;
+            border: 2px solid #0f172a;
+            box-shadow: 0 0 0 2px #fbbf2440;
+            z-index: 1;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(251, 191, 36, 0.15);
+        }
+
+        .prophet-card {
+            cursor: pointer;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: #0f172a;
+            border: 1px solid rgba(251,191,36,0.3);
+            border-radius: 1.5rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #fbbf24;
+        }
+
+        .era-badge {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+
+        .category-filter.active {
+            background: #fbbf24;
+            color: #0f172a;
+        }
+    </style>
+</head>
+
+<body class="bg-ramadan-dark text-white font-tajawal">
+    <div id="nav-placeholder"></div>
+    <div id="page-content-wrapper">
+        <section id="seerah" class="py-24 min-h-screen relative overflow-hidden">
+            <div class="absolute inset-0 stars opacity-30"></div>
+            <div class="absolute inset-0 islamic-pattern opacity-10"></div>
+
+            <div class="container mx-auto px-4 relative z-10">
+                <!-- Header -->
+                <div class="text-center mb-10">
+                    <span class="text-ramadan-gold text-sm font-bold tracking-wider">
+                        <i class="fas fa-book-open ml-2"></i>
+                        قُلْ سِيرُوا فِي الْأَرْضِ فَانظُرُوا
+                    </span>
+                    <h2 class="text-3xl lg:text-5xl font-bold mt-2 font-amiri text-white">السيرة والأنبياء والصحابة</h2>
+                    <p class="text-gray-400 mt-2 max-w-xl mx-auto">تعرّف على سيرة النبي ﷺ وقصص الأنبياء وسير الصحابة الكرام</p>
+                </div>
+
+                <!-- Tabs -->
+                <div class="max-w-5xl mx-auto">
+                    <div class="flex gap-2 mb-8 bg-white/5 p-1 rounded-2xl border border-white/10">
+                        <button onclick="switchTab('seerah-tab')" id="tab-seerah"
+                            class="tab-btn active flex-1 py-3 px-4 rounded-xl text-sm transition-all flex items-center justify-center gap-2">
+                            <span class="hidden sm:inline">السيرة النبوية</span>
+                            <span class="sm:hidden">السيرة</span>
+                        </button>
+                        <button onclick="switchTab('prophets-tab')" id="tab-prophets"
+                            class="tab-btn flex-1 py-3 px-4 rounded-xl text-sm transition-all text-gray-400 flex items-center justify-center gap-2">
+                            <span class="hidden sm:inline">سير الأنبياء</span>
+                            <span class="sm:hidden">الأنبياء</span>
+                        </button>
+                        <button onclick="switchTab('sahaba-tab')" id="tab-sahaba"
+                            class="tab-btn flex-1 py-3 px-4 rounded-xl text-sm transition-all text-gray-400 flex items-center justify-center gap-2">
+                            <span class="hidden sm:inline">الصحابة الكرام</span>
+                            <span class="sm:hidden">الصحابة</span>
+                        </button>
+                    </div>
+
+                    <!-- ===== TAB 1: SEERAH TIMELINE ===== -->
+                    <div id="seerah-tab" class="tab-content">
+                        <div id="seerahLoading" class="text-center py-16 text-gray-400">
+                            <i class="fas fa-spinner fa-spin text-4xl mb-4 text-ramadan-gold"></i>
+                            <p>جاري تحميل السيرة...</p>
+                        </div>
+                        <div id="seerahTimeline" class="hidden relative pr-10">
+                            <div class="timeline-line"></div>
+                            <!-- JS generated -->
+                        </div>
+                    </div>
+
+                    <!-- ===== TAB 2: PROPHETS ===== -->
+                    <div id="prophets-tab" class="tab-content hidden">
+                        <div id="prophetsLoading" class="text-center py-16 text-gray-400">
+                            <i class="fas fa-spinner fa-spin text-4xl mb-4 text-ramadan-gold"></i>
+                            <p>جاري تحميل الأنبياء...</p>
+                        </div>
+                        <div id="prophetsGrid" class="hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            <!-- JS generated -->
+                        </div>
+                    </div>
+
+                    <!-- ===== TAB 3: SAHABA ===== -->
+                    <div id="sahaba-tab" class="tab-content hidden">
+                        <!-- Search & Filter -->
+                        <div class="mb-6 flex flex-col sm:flex-row gap-3">
+                            <div class="relative flex-1">
+                                <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                <input type="text" id="sahabaSearch" placeholder="ابحث عن صحابي..."
+                                    class="search-input w-full pr-10 pl-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm" />
+                            </div>
+                            <div class="flex gap-2 flex-wrap">
+                                <button onclick="filterSahaba('all')" class="category-filter active px-3 py-2 rounded-lg bg-white/5 text-sm transition-all" data-cat="all">الكل</button>
+                                <button onclick="filterSahaba('عشرة')" class="category-filter px-3 py-2 rounded-lg bg-white/5 text-sm transition-all text-gray-400" data-cat="عشرة">العشرة المبشرون</button>
+                                <button onclick="filterSahaba('كبار')" class="category-filter px-3 py-2 rounded-lg bg-white/5 text-sm transition-all text-gray-400" data-cat="كبار">كبار الصحابة</button>
+                                <button onclick="filterSahaba('أمهات المؤمنين')" class="category-filter px-3 py-2 rounded-lg bg-white/5 text-sm transition-all text-gray-400" data-cat="أمهات المؤمنين">أمهات المؤمنين</button>
+                                <button onclick="filterSahaba('آل البيت')" class="category-filter px-3 py-2 rounded-lg bg-white/5 text-sm transition-all text-gray-400" data-cat="آل البيت">آل البيت</button>
+                            </div>
+                        </div>
+                        <div id="sahabaLoading" class="text-center py-16 text-gray-400">
+                            <i class="fas fa-spinner fa-spin text-4xl mb-4 text-ramadan-gold"></i>
+                            <p>جاري تحميل الصحابة...</p>
+                        </div>
+                        <div id="sahabaGrid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- JS generated -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal for Prophet/Sahabi Details -->
+    <div id="detailModal" class="modal-overlay hidden" onclick="closeModal(event)">
+        <div class="modal-content" id="modalContent">
+            <!-- JS generated -->
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        // Data cache
+        let seerahData = [];
+        let prophetsData = [];
+        let sahabaData = [];
+        let currentSahabaFilter = 'all';
+        let sahabaSearchQuery = '';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            injectNav('seerah');
+            injectFooter();
+            loadSeerah();
+
+            // Search listener
+            const searchInput = document.getElementById('sahabaSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    sahabaSearchQuery = e.target.value.trim();
+                    renderSahabaGrid();
+                });
+            }
+        });
+
+        // ===== TAB SWITCHING =====
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.classList.add('text-gray-400');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const btnMap = { 'seerah-tab': 'tab-seerah', 'prophets-tab': 'tab-prophets', 'sahaba-tab': 'tab-sahaba' };
+            const activeBtn = document.getElementById(btnMap[tabId]);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                activeBtn.classList.remove('text-gray-400');
+            }
+
+            // Lazy load
+            if (tabId === 'prophets-tab' && prophetsData.length === 0) loadProphets();
+            if (tabId === 'sahaba-tab' && sahabaData.length === 0) loadSahaba();
+        }
+
+        // ===== SEERAH TIMELINE =====
+        async function loadSeerah() {
+            try {
+                const res = await fetch('data/seerah.json');
+                seerahData = await res.json();
+                renderSeerahTimeline();
+            } catch (e) {
+                document.getElementById('seerahLoading').innerHTML = '<p class="text-red-400">فشل تحميل البيانات</p>';
+            }
+        }
+
+        function renderSeerahTimeline() {
+            const container = document.getElementById('seerahTimeline');
+            const loading = document.getElementById('seerahLoading');
+            if (!container) return;
+
+            const colorMap = {
+                yellow: 'border-yellow-500/30 bg-yellow-500/5',
+                gray: 'border-gray-500/30 bg-gray-500/5',
+                amber: 'border-amber-500/30 bg-amber-500/5',
+                rose: 'border-rose-500/30 bg-rose-500/5',
+                stone: 'border-stone-500/30 bg-stone-500/5',
+                green: 'border-green-500/30 bg-green-500/5',
+                orange: 'border-orange-500/30 bg-orange-500/5',
+                blue: 'border-blue-500/30 bg-blue-500/5',
+                purple: 'border-purple-500/30 bg-purple-500/5',
+                teal: 'border-teal-500/30 bg-teal-500/5',
+                red: 'border-red-500/30 bg-red-500/5',
+                gold: 'border-yellow-400/50 bg-yellow-400/10',
+            };
+
+            const eraColors = {
+                'قبل البعثة': 'bg-gray-500/20 text-gray-300',
+                'مكة المكرمة': 'bg-amber-500/20 text-amber-300',
+                'الهجرة': 'bg-teal-500/20 text-teal-300',
+                'المدينة المنورة': 'bg-green-500/20 text-green-300',
+            };
+
+            container.innerHTML = seerahData.map((event, i) => {
+                const cardClass = colorMap[event.color] || colorMap.gray;
+                const eraClass = eraColors[event.era] || 'bg-white/10 text-gray-300';
+                return `
+                <div class="relative mb-8 mr-6">
+                    <div class="timeline-dot"></div>
+                    <div class="glass-effect rounded-2xl p-5 border ${cardClass} card-hover">
+                        <div class="mb-3">
+                            <div class="flex flex-wrap gap-2 mb-1">
+                                <span class="era-badge ${eraClass}">${event.era}</span>
+                                <span class="era-badge bg-ramadan-gold/20 text-ramadan-gold">${event.hijri}</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white font-amiri">${event.title}</h3>
+                            <p class="text-xs text-gray-400 mt-1">${event.year}</p>
+                        </div>
+                        <p class="text-gray-300 text-sm leading-relaxed">${event.description}</p>
+                    </div>
+                </div>`;
+            }).join('');
+
+            loading.classList.add('hidden');
+            container.classList.remove('hidden');
+        }
+
+        function showSeerahDetail(index) {
+            const event = seerahData[index];
+            if (!event) return;
+
+            const eraColors = {
+                'قبل البعثة': 'bg-gray-500/20 text-gray-300',
+                'مكة المكرمة': 'bg-amber-500/20 text-amber-300',
+                'الهجرة': 'bg-teal-500/20 text-teal-300',
+                'المدينة المنورة': 'bg-green-500/20 text-green-300',
+            };
+            const eraClass = eraColors[event.era] || 'bg-white/10 text-gray-300';
+
+            document.getElementById('modalContent').innerHTML = `
+                <button onclick="closeModalBtn()" class="absolute top-4 left-4 text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="text-center mb-6">
+                    <div class="flex flex-wrap justify-center gap-2 mb-3">
+                        <span class="era-badge ${eraClass}">${event.era}</span>
+                        <span class="era-badge bg-ramadan-gold/20 text-ramadan-gold">${event.hijri}</span>
+                    </div>
+                    <h2 class="text-2xl font-bold font-amiri text-ramadan-gold">${event.title}</h2>
+                    <p class="text-gray-400 text-sm mt-1">${event.year}</p>
+                </div>
+                <div class="bg-white/5 rounded-xl p-5">
+                    <p class="text-gray-200 text-sm leading-loose font-amiri text-lg">${event.description}</p>
+                </div>
+            `;
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+
+        // ===== PROPHETS =====
+        async function loadProphets() {
+            try {
+                const res = await fetch('data/prophets.json');
+                prophetsData = await res.json();
+                renderProphetsGrid();
+            } catch (e) {
+                document.getElementById('prophetsLoading').innerHTML = '<p class="text-red-400">فشل تحميل البيانات</p>';
+            }
+        }
+
+        function renderProphetsGrid() {
+            const container = document.getElementById('prophetsGrid');
+            const loading = document.getElementById('prophetsLoading');
+            if (!container) return;
+
+            container.innerHTML = prophetsData.map((p, i) => `
+                <div class="prophet-card glass-effect rounded-2xl p-6 border border-ramadan-gold/10 hover:border-ramadan-gold/40 transition-all flex flex-col gap-4">
+                    <div class="flex items-center justify-between border-b border-white/5 pb-3">
+                        <div class="text-right">
+                            <span class="text-[10px] bg-ramadan-gold/20 text-ramadan-gold px-2 py-0.5 rounded-full font-bold mb-1 inline-block">${i + 1}</span>
+                            <h3 class="font-bold text-white font-amiri text-2xl leading-tight">${p.name}</h3>
+                            <p class="text-xs text-ramadan-gold opacity-80">${p.title}</p>
+                        </div>
+                        <i class="fas fa-star text-ramadan-gold/30 text-xl"></i>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-2 text-[11px]">
+                        <div class="bg-white/5 p-2 rounded-lg">
+                            <span class="text-gray-500 block mb-0.5">القوم</span>
+                            <span class="text-gray-200 font-bold">${p.quom}</span>
+                        </div>
+                        <div class="bg-white/5 p-2 rounded-lg">
+                            <span class="text-gray-500 block mb-0.5">الحقبة</span>
+                            <span class="text-gray-200 font-bold">${p.period}</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-ramadan-gold/5 border border-ramadan-gold/10 p-3 rounded-xl">
+                        <h4 class="text-ramadan-gold text-xs font-bold mb-1 flex items-center gap-2">
+                            <i class="fas fa-magic text-[10px]"></i> المعجزة
+                        </h4>
+                        <p class="text-gray-300 text-xs leading-relaxed">${p.miracle}</p>
+                    </div>
+
+                    <div class="flex-1">
+                        <h4 class="text-gray-400 text-xs font-bold mb-1 flex items-center gap-2">
+                            <i class="fas fa-scroll text-[10px]"></i> القصة
+                        </h4>
+                        <p class="text-gray-300 text-sm leading-relaxed font-amiri text-justify line-clamp-[8] hover:line-clamp-none transition-all cursor-help" title="انقر للتوسيع">
+                            ${p.story}
+                        </p>
+                    </div>
+
+                    <div class="pt-3 border-t border-white/5 italic text-[11px] text-ramadan-gold/60 text-center">
+                        <i class="fas fa-quote-right ml-1"></i> ${p.lesson}
+                    </div>
+                </div>
+            `).join('');
+
+            loading.classList.add('hidden');
+            container.classList.remove('hidden');
+        }
+
+        function showProphetDetail(index) {
+            const p = prophetsData[index];
+            if (!p) return;
+
+            document.getElementById('modalContent').innerHTML = `
+                <button onclick="closeModalBtn()" class="absolute top-4 left-4 text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl font-bold font-amiri text-ramadan-gold">${p.name}</h2>
+                    <p class="text-gray-400 text-sm mt-1">${p.title}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div class="bg-white/5 rounded-xl p-3 text-center">
+                        <div class="text-xs text-gray-400 mb-1">القوم</div>
+                        <div class="text-sm font-bold text-white">${p.quom}</div>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-3 text-center">
+                        <div class="text-xs text-gray-400 mb-1">الحقبة</div>
+                        <div class="text-sm font-bold text-white">${p.period}</div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="bg-ramadan-gold/10 border border-ramadan-gold/20 rounded-xl p-4">
+                        <h4 class="text-ramadan-gold font-bold text-sm mb-2"><i class="fas fa-star ml-2"></i>المعجزة</h4>
+                        <p class="text-gray-300 text-sm">${p.miracle}</p>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <h4 class="text-white font-bold text-sm mb-2"><i class="fas fa-book ml-2"></i>ذكره في القرآن</h4>
+                        <p class="text-gray-300 text-sm">${p.quranMention}</p>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <h4 class="text-white font-bold text-sm mb-2"><i class="fas fa-scroll ml-2"></i>القصة</h4>
+                        <p class="text-gray-300 text-sm leading-relaxed">${p.story}</p>
+                    </div>
+                    <div class="bg-green-900/20 border border-green-500/20 rounded-xl p-4">
+                        <h4 class="text-green-400 font-bold text-sm mb-2"><i class="fas fa-lightbulb ml-2"></i>الدرس المستفاد</h4>
+                        <p class="text-gray-300 text-sm">${p.lesson}</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        // ===== SAHABA =====
+        async function loadSahaba() {
+            try {
+                const res = await fetch('data/sahaba.json');
+                sahabaData = await res.json();
+                renderSahabaGrid();
+            } catch (e) {
+                document.getElementById('sahabaLoading').innerHTML = '<p class="text-red-400">فشل تحميل البيانات</p>';
+            }
+        }
+
+        function filterSahaba(cat) {
+            currentSahabaFilter = cat;
+            document.querySelectorAll('.category-filter').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('text-gray-400');
+                if (btn.dataset.cat === cat) {
+                    btn.classList.add('active');
+                    btn.classList.remove('text-gray-400');
+                }
+            });
+            renderSahabaGrid();
+        }
+
+        function renderSahabaGrid() {
+            const container = document.getElementById('sahabaGrid');
+            const loading = document.getElementById('sahabaLoading');
+            if (!container || sahabaData.length === 0) return;
+
+            let filtered = sahabaData;
+            if (currentSahabaFilter !== 'all') {
+                filtered = filtered.filter(s => s.category === currentSahabaFilter);
+            }
+            if (sahabaSearchQuery) {
+                const q = sahabaSearchQuery.toLowerCase();
+                filtered = filtered.filter(s =>
+                    s.name.includes(sahabaSearchQuery) ||
+                    s.title.includes(sahabaSearchQuery) ||
+                    s.virtues.includes(sahabaSearchQuery)
+                );
+            }
+
+            const catLabels = {
+                'عشرة': { label: 'العشرة المبشرون بالجنة', cls: 'bg-yellow-500/20 text-yellow-300' },
+                'كبار': { label: 'كبار الصحابة', cls: 'bg-blue-500/20 text-blue-300' },
+                'أمهات المؤمنين': { label: 'أم المؤمنين', cls: 'bg-pink-500/20 text-pink-300' },
+                'آل البيت': { label: 'آل البيت', cls: 'bg-purple-500/20 text-purple-300' },
+            };
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="col-span-full text-center py-12 text-gray-400">لا توجد نتائج</div>';
+            } else {
+                container.innerHTML = filtered.map((s, i) => {
+                    const cat = catLabels[s.category] || { label: s.category, cls: 'bg-white/10 text-gray-300' };
+                    return `
+                    <div class="glass-effect rounded-2xl p-6 border border-white/10 hover:border-ramadan-gold/30 transition-all flex flex-col gap-4">
+                        <div class="flex items-start justify-between border-b border-white/5 pb-4">
+                            <div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full ${cat.cls} font-bold mb-2 inline-block">${cat.label}</span>
+                                <h3 class="font-bold text-white font-amiri text-2xl leading-tight">${s.name}</h3>
+                                <p class="text-ramadan-gold text-xs opacity-80">${s.title}</p>
+                            </div>
+                            <div class="text-left">
+                                <span class="block text-[10px] text-gray-500">المولد: ${s.born}</span>
+                                <span class="block text-[10px] text-gray-500">الوفاة: ${s.died}</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-ramadan-gold text-xs font-bold mb-2 flex items-center gap-2">
+                                <i class="fas fa-award text-[10px]"></i> فضائله
+                            </h4>
+                            <p class="text-gray-300 text-xs leading-relaxed">${s.virtues}</p>
+                        </div>
+
+                        <div class="bg-ramadan-gold/5 border border-ramadan-gold/10 p-4 rounded-xl flex-1">
+                            <h4 class="text-gray-400 text-xs font-bold mb-2 flex items-center gap-2">
+                                <i class="fas fa-history text-[10px]"></i> من سيرته
+                            </h4>
+                            <p class="text-gray-300 text-sm leading-relaxed text-justify font-amiri line-clamp-[6] hover:line-clamp-none transition-all cursor-help">
+                                ${s.story}
+                            </p>
+                        </div>
+
+                        <div class="bg-ramadan-dark/40 p-3 rounded-lg border border-white/5">
+                            <p class="text-ramadan-gold text-xs italic text-center font-amiri">
+                                <i class="fas fa-quote-right ml-2 text-[10px] opacity-50"></i> ${s.hadith}
+                            </p>
+                        </div>
+                        
+                        <div class="text-[10px] text-gray-500 text-center uppercase tracking-widest pt-2">
+                            ${s.rank}
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+
+            loading.classList.add('hidden');
+            container.classList.remove('hidden');
+        }
+
+        function showSahabiDetail(id) {
+            const s = sahabaData.find(x => x.id == id);
+            if (!s) return;
+
+            const catLabels = {
+                'عشرة': { label: 'من العشرة المبشرين بالجنة', cls: 'bg-yellow-500/20 text-yellow-300' },
+                'كبار': { label: 'من كبار الصحابة', cls: 'bg-blue-500/20 text-blue-300' },
+                'أمهات المؤمنين': { label: 'أم المؤمنين', cls: 'bg-pink-500/20 text-pink-300' },
+                'آل البيت': { label: 'من آل البيت', cls: 'bg-purple-500/20 text-purple-300' },
+            };
+            const cat = catLabels[s.category] || { label: s.category, cls: 'bg-white/10 text-gray-300' };
+
+            document.getElementById('modalContent').innerHTML = `
+                <button onclick="closeModalBtn()" class="absolute top-4 left-4 text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="text-center mb-6">
+                    <span class="text-xs px-3 py-1 rounded-full ${cat.cls} mb-2 inline-block">${cat.label}</span>
+                    <h2 class="text-2xl font-bold font-amiri text-ramadan-gold mt-2">${s.name}</h2>
+                    <p class="text-gray-400 text-sm">${s.fullName}</p>
+                    <p class="text-ramadan-gold text-sm font-bold mt-1">${s.title}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div class="bg-white/5 rounded-xl p-3 text-center">
+                        <div class="text-xs text-gray-400 mb-1">المولد</div>
+                        <div class="text-sm font-bold text-white">${s.born}</div>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-3 text-center">
+                        <div class="text-xs text-gray-400 mb-1">الوفاة</div>
+                        <div class="text-sm font-bold text-white">${s.died}</div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="bg-ramadan-gold/10 border border-ramadan-gold/20 rounded-xl p-4">
+                        <h4 class="text-ramadan-gold font-bold text-sm mb-2"><i class="fas fa-star ml-2"></i>فضائله</h4>
+                        <p class="text-gray-300 text-sm leading-relaxed">${s.virtues}</p>
+                    </div>
+                    <div class="bg-green-900/20 border border-green-500/20 rounded-xl p-4">
+                        <h4 class="text-green-400 font-bold text-sm mb-2"><i class="fas fa-quote-right ml-2"></i>من الحديث الشريف</h4>
+                        <p class="text-gray-300 text-sm leading-relaxed font-amiri">${s.hadith}</p>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-4">
+                        <h4 class="text-white font-bold text-sm mb-2"><i class="fas fa-scroll ml-2"></i>من سيرته</h4>
+                        <p class="text-gray-300 text-sm leading-relaxed">${s.story}</p>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-3 text-center">
+                        <p class="text-xs text-gray-400">${s.rank}</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        // ===== MODAL =====
+        function closeModal(event) {
+            if (event.target === document.getElementById('detailModal')) {
+                document.getElementById('detailModal').classList.add('hidden');
+            }
+        }
+
+        function closeModalBtn() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        // Close on ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') document.getElementById('detailModal').classList.add('hidden');
+        });
+    </script>
+    <div id="global-player"></div>
+</body>
+
+</html>

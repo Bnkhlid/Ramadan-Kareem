@@ -1,0 +1,291 @@
+﻿<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-title" content="رمضان كريم" />
+  <meta name="description" content="موقع رمضان كريم - موقع إسلامي شامل" />
+
+  <!-- Social Meta Tags -->
+  <meta property="og:title" content="رمضان كريم | تطبيق إسلامي شامل" />
+  <meta property="og:description"
+    content="اقرأ القرآن، الأذكار، مواقيت الصلاة، وتتبع عبادتك في رمضان وطوال العام. الدال على الخير كفاعله." />
+  <meta property="og:image" content="images/icon-512.png" />
+  <meta property="og:url" content="https://ramadan-karim.net" />
+  <meta property="og:type" content="website" />
+
+  <title>رمضان كريم | الرئيسية</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="رمضان كريم">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&family=Scheherazade+New:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#fbbf24" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="apple-touch-icon" href="images/icon-192.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="js/share-utils.js?v=v_spa_fixed_v19"></script>
+  <script src="js/main.js?v=v_spa_fixed_v19"></script>
+  <script src="js/notifications.js?v=v_spa_fixed_v19"></script>
+  <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+  <link rel="stylesheet" href="css/style.css?v=v_spa_fixed_v19">
+</head>
+
+<body class="bg-ramadan-dark text-white font-tajawal overflow-x-hidden">
+
+  <!-- Nav Placeholder -->
+  <div id="nav-placeholder"></div>
+  <div id="page-content-wrapper">
+    <!-- Hero -->
+    <section id="home" class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20">
+      <div class="absolute inset-0 stars"></div>
+      <div class="absolute inset-0 islamic-pattern opacity-10"></div>
+      <div class="crescent" aria-hidden="true">☾</div>
+
+
+      <!-- Lanterns -->
+      <div class="lantern-container absolute top-24 left-[12%] h-48 -translate-x-1/2">
+        <div class="lantern-swing h-full">
+          <svg class="lantern-glow w-12 h-auto" viewBox="0 0 100 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="48" y="0" width="4" height="40" fill="#fbbf24" />
+            <path d="M50 40L80 70L70 110L30 110L20 70L50 40Z" fill="#fbbf24" fill-opacity="0.2" stroke="#fbbf24"
+              stroke-width="2" />
+            <circle cx="50" cy="75" r="15" fill="#fbbf24" fill-opacity="0.6" />
+            <path d="M30 110L70 110L80 130L20 130L30 110Z" fill="#fbbf24" fill-opacity="0.3" stroke="#fbbf24"
+              stroke-width="2" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="lantern-container absolute top-20 right-[12%] h-64 translate-x-1/2">
+        <div class="lantern-swing h-full" style="animation-delay: -1.5s;">
+          <svg class="lantern-glow w-10 h-auto" viewBox="0 0 100 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="48" y="0" width="4" height="30" fill="#fbbf24" />
+            <path d="M50 30L75 55L65 90L35 90L25 55L50 30Z" fill="#fbbf24" fill-opacity="0.2" stroke="#fbbf24"
+              stroke-width="2" />
+            <circle cx="50" cy="65" r="12" fill="#fbbf24" fill-opacity="0.6" />
+            <path d="M35 90L65 90L75 105L25 105L35 90Z" fill="#fbbf24" fill-opacity="0.3" stroke="#fbbf24"
+              stroke-width="2" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="container mx-auto px-4 text-center relative z-10">
+        <div class="mb-6 animate-fade-in">
+          <span
+            class="hero-pill text-ramadan-gold text-sm font-medium border border-ramadan-gold/30 px-4 py-1 rounded-full bg-ramadan-gold/10">
+            <i class="fas fa-moon mr-2"></i>
+            بسم الله الرحمن الرحيم
+          </span>
+        </div>
+
+        <h1
+          class="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 font-amiri text-ramadan-gold leading-tight drop-shadow-2xl">
+          رمضان كريم
+        </h1>
+
+        <p class="text-lg md:text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed px-4">
+          شهر القرآن والرحمة — حيث تفتح أبواب الجنة وتصفد الشياطين
+        </p>
+
+        <!-- Countdown & Buttons Frame -->
+        <div class="hero-card glass-effect max-w-3xl mx-auto p-8 md:p-12 mb-12">
+          <!-- Centered Countdown -->
+          <div class="flex gap-6 md:gap-10 items-center justify-center mb-12">
+            <div class="text-center">
+              <div class="text-4xl md:text-5xl font-bold text-ramadan-gold mb-1" id="cntHours">--</div>
+              <div class="text-xs uppercase tracking-widest text-ramadan-gold">ساعة</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl md:text-5xl font-bold text-ramadan-gold mb-1" id="cntMinutes">--</div>
+              <div class="text-xs uppercase tracking-widest text-ramadan-gold">دقيقة</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl md:text-5xl font-bold text-ramadan-gold mb-1" id="cntSeconds">--</div>
+              <div class="text-xs uppercase tracking-widest text-ramadan-gold">ثانية</div>
+            </div>
+          </div>
+
+          <!-- Classic 3 Buttons -->
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a href="quran.html"
+              class="w-full sm:w-auto px-10 py-4 rounded-full bg-ramadan-gold text-ramadan-dark font-bold text-lg hover:bg-white transition-all shadow-lg hover:scale-105 active:scale-95">
+              اقرأ القرآن
+            </a>
+            <a href="sadaqah.html"
+              class="w-full sm:w-auto px-10 py-4 rounded-full border-2 border-ramadan-gold text-ramadan-gold font-bold text-lg hover:bg-ramadan-gold/10 transition-all hover:scale-105 active:scale-95">
+              صدقة جارية
+            </a>
+            <a href="tracker.html"
+              class="w-full sm:w-auto px-10 py-4 rounded-full bg-white/10 text-white font-bold text-lg hover:bg-white/20 transition-all border border-white/20 hover:scale-105 active:scale-95">
+              تتبع رمضان
+            </a>
+          </div>
+        </div>
+
+        <!-- Optional Hijri Date -->
+        <div class="mt-16 text-gray-400">
+          <div class="text-sm mb-1 opacity-60">التاريخ الهجري الحالي</div>
+          <div class="text-xl font-bold text-gray-200" id="hijriDate">جاري التحميل...</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Notification Prompt -->
+  <div id="notificationPrompt"
+    class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-500 hidden">
+    <div class="glass-effect p-4 rounded-2xl border border-ramadan-gold/30 shadow-2xl flex items-center gap-4 max-w-sm">
+      <div class="w-12 h-12 rounded-full bg-ramadan-gold/20 flex items-center justify-center text-ramadan-gold">
+        <i class="fas fa-bell"></i>
+      </div>
+      <div class="flex-1">
+        <p class="text-xs font-bold text-ramadan-gold mb-1">فعل الإشعارات</p>
+        <p class="text-[10px] text-gray-300">لتصلك مواقيت الصلاة والأذكار اليومية</p>
+        <button onclick="enableMyNotifications()"
+          class="mt-2 text-[10px] bg-ramadan-gold text-ramadan-dark px-3 py-1 rounded-full font-bold">تفعيل</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      injectNav('home');
+      injectFooter();
+
+      // Initialize Timer Display
+      if (document.getElementById("cntHours")) document.getElementById("cntHours").textContent = "--";
+      if (document.getElementById("cntMinutes")) document.getElementById("cntMinutes").textContent = "--";
+      if (document.getElementById("cntSeconds")) document.getElementById("cntSeconds").textContent = "--";
+
+      // Initialize Notifications
+      if (typeof initNotifications === 'function') {
+        const supported = await initNotifications();
+        if (supported && Notification.permission === 'default') {
+          setTimeout(showNotificationPrompt, 3000);
+        }
+      }
+
+      // Fetch Prayer Times for Countdown
+      fetchPrayerTimesForTimer();
+
+      // Hijri Date Simple Approximation
+      // Ramadan starts 2026-02-19 (Thursday), subtract 1 day so today shows as Sha'ban 30
+      const date = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+      const options = { year: 'numeric', month: 'long', day: 'numeric', calendar: 'islamic-umalqura' };
+      if (document.getElementById("hijriDate")) {
+        document.getElementById("hijriDate").textContent = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', options).format(date);
+      }
+    });
+
+    function showNotificationPrompt() {
+      const prompt = document.getElementById('notificationPrompt');
+      if (!prompt) return;
+      prompt.classList.remove('hidden');
+      setTimeout(() => {
+        prompt.classList.remove('translate-y-20', 'opacity-0');
+      }, 100);
+    }
+
+    function hidePrompt() {
+      const prompt = document.getElementById('notificationPrompt');
+      if (!prompt) return;
+      prompt.classList.add('translate-y-20', 'opacity-0');
+      setTimeout(() => prompt.classList.add('hidden'), 500);
+    }
+
+    async function enableMyNotifications() {
+      const success = await requestNotificationPermission();
+      if (success) {
+        hidePrompt();
+      }
+    }
+
+    window.globalMaghribTime = window.globalMaghribTime || null;
+
+    async function fetchPrayerTimesForTimer() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            await getMaghribTime(latitude, longitude);
+          },
+          (error) => {
+            console.warn("Location access denied", error);
+            getMaghribTime(30.0444, 31.2357);
+          }
+        );
+      } else {
+        getMaghribTime(30.0444, 31.2357);
+      }
+    }
+
+    async function getMaghribTime(lat, lng) {
+      try {
+        const date = new Date();
+        const d = date.getDate(), m = date.getMonth() + 1, y = date.getFullYear();
+        const url = `https://api.aladhan.com/v1/timings/${d}-${m}-${y}?latitude=${lat}&longitude=${lng}&method=5`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.code === 200) {
+          const maghribStr = data.data.timings.Maghrib;
+          const now = new Date();
+          const [h, min] = maghribStr.split(':').map(Number);
+          const target = new Date();
+          target.setHours(h, min, 0, 0);
+
+          if (now > target) {
+            target.setDate(target.getDate() + 1);
+          }
+
+          window.globalMaghribTime = target;
+
+          if (window.countdownInterval) clearInterval(window.countdownInterval);
+          window.countdownInterval = setInterval(updateCountdown, 1000);
+          updateCountdown();
+        }
+      } catch (err) {
+        console.error("Timer Fetch Error", err);
+      }
+    }
+
+    function updateCountdown() {
+      const elHours = document.getElementById("cntHours");
+      if (!elHours) {
+        if (window.countdownInterval) clearInterval(window.countdownInterval);
+        return;
+      }
+      if (!window.globalMaghribTime) return;
+
+      const now = new Date();
+      let diff = Math.max(0, window.globalMaghribTime - now);
+
+      const hrs = Math.floor(diff / (1000 * 60 * 60));
+      diff -= hrs * 1000 * 60 * 60;
+      const mins = Math.floor(diff / (1000 * 60));
+      diff -= mins * 1000 * 60;
+      const secs = Math.floor(diff / 1000);
+
+      elHours.textContent = String(hrs).padStart(2, "0");
+      if (document.getElementById("cntMinutes")) document.getElementById("cntMinutes").textContent = String(mins).padStart(2, "0");
+      if (document.getElementById("cntSeconds")) document.getElementById("cntSeconds").textContent = String(secs).padStart(2, "0");
+    }
+  </script>
+  <div id="global-player"></div>
+</body>
+
+</html>

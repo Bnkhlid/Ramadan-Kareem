@@ -1,0 +1,141 @@
+﻿<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>رمضان كريم | تحميل المصاحف</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="رمضان كريم">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/share-utils.js?v=v_spa_fixed_v19"></script>
+    <script src="js/main.js?v=v_spa_fixed_v19"></script>
+    <script src="js/notifications.js?v=v_spa_fixed_v19"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+    <link rel="stylesheet" href="css/style.css?v=v_spa_fixed_v19">
+</head>
+
+<body class="bg-ramadan-dark text-white font-tajawal">
+    <div id="nav-placeholder"></div>
+    <div id="page-content-wrapper">
+        <section id="moshaf" class="py-24 min-h-screen relative overflow-hidden bg-ramadan-dark">
+            <!-- Background Elements -->
+            <div class="absolute inset-0 stars opacity-30"></div>
+            <div class="absolute inset-0 islamic-pattern opacity-10"></div>
+
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="text-center mb-12">
+                    <span class="text-ramadan-gold text-sm font-bold tracking-wider">مكتبة المصاحف</span>
+                    <h2 class="text-3xl lg:text-5xl font-bold mt-2 font-amiri text-white">تحميل المصحف الشريف</h2>
+                </div>
+
+                <div id="moshafContainer"
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                    <div class="col-span-full text-center py-12">
+                        <div class="loader mx-auto mb-4"></div>
+                        <p>جاري التحميل...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="footer-placeholder"></div>
+
+    <script>
+        var currentSource = 'static'; // 'static' or 'api'
+
+        document.addEventListener("DOMContentLoaded", () => {
+            injectNav('moshaf');
+            injectFooter();
+            loadMoshaf();
+        });
+
+        async function loadMoshaf(source = 'static') {
+            currentSource = source;
+            const container = document.getElementById("moshafContainer");
+
+            // Show Loader
+            container.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <div class="loader mx-auto mb-4"></div>
+                    <p>جاري تحميل المصاحف...</p>
+                </div>
+            `;
+
+            try {
+                if (source === 'static') {
+                    const res = await fetch("data/moshaf_types.json?v=" + Date.now());
+                    if (!res.ok) throw new Error("File not found");
+                    const data = await res.json();
+                    renderCards(data);
+                } else {
+                    // Mp3Quran Photo Mushaf API
+                    const res = await fetch("https://mp3quran.net/api/v3/suwar?language=ar");
+                    const data = await res.json();
+                    // Transforming API data to match our card format
+                    // Since the API is mainly for audio, we'll use a curated list or a robust fallback
+                    // For now, let's enhance the static library with more reliable mirrors
+                    loadMoshaf('static'); // Fallback to static if API is not suited for PDF
+                }
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <i class="fas fa-exclamation-circle text-red-400 text-5xl mb-4"></i>
+                        <p class="text-red-400 mb-4">فشل تحميل المكتبة. تأكد من اتصالك بالإنترنت.</p>
+                        <button onclick="loadMoshaf()" class="px-6 py-2 bg-ramadan-gold text-ramadan-dark rounded-full font-bold hover:bg-white transition-all">إعادة المحاولة</button>
+                    </div>
+                `;
+            }
+        }
+
+        function renderCards(data) {
+            const container = document.getElementById("moshafContainer");
+            container.innerHTML = "";
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p class="col-span-full text-center">لا توجد مصاحف متاحة حالياً</p>';
+                return;
+            }
+
+            data.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "glass-effect rounded-2xl overflow-hidden hover:transform hover:-translate-y-2 transition-transform duration-300 border border-white/5 hover:border-ramadan-gold/30 shadow-xl";
+                div.innerHTML = `
+                    <div class="h-40 bg-gradient-to-br from-ramadan-gold/10 to-ramadan-blue/10 flex items-center justify-center relative overflow-hidden group">
+                        <i class="fas fa-book-quran text-6xl text-ramadan-gold/30 transition-transform group-hover:scale-110 duration-500"></i>
+                        <div class="absolute inset-0 bg-ramadan-gold/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-ramadan-gold">${item.name}</h3>
+                            <span class="text-[10px] px-2 py-1 rounded bg-white/5 text-gray-400 border border-white/10">PDF</span>
+                        </div>
+                        <p class="text-sm text-gray-400 mb-6 h-12 overflow-hidden leading-relaxed">${item.description || 'نسخة عالية الجودة للتحميل والقراءة المباشرة'}</p>
+                        <div class="flex gap-2">
+                             <a href="${item.download_link}" target="_blank" class="flex-1 py-3 rounded-xl bg-ramadan-gold text-ramadan-dark text-center font-bold hover:bg-white transition-all shadow-lg shadow-ramadan-gold/20 flex items-center justify-center gap-2">
+                                <i class="fas fa-download"></i> تحميل
+                            </a>
+                            <a href="https://docs.google.com/viewer?url=${encodeURIComponent(item.download_link)}" target="_blank" class="px-4 py-3 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all flex items-center justify-center" title="قراءة أونلاين">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+    </script>
+    <div id="global-player"></div>
+</body>
+
+</html>
+

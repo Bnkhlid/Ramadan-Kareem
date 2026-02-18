@@ -1,0 +1,148 @@
+﻿<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>رمضان كريم | مشاركة الموقع</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="رمضان كريم">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&family=Scheherazade+New:wght@400;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/share-utils.js?v=v_spa_fixed_v19"></script>
+    <script src="js/main.js?v=v_spa_fixed_v19"></script>
+    <script src="js/notifications.js?v=v_spa_fixed_v19"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+    <link rel="stylesheet" href="css/style.css?v=v_spa_fixed_v19">
+</head>
+
+<body class="bg-ramadan-dark text-white font-tajawal">
+    <div id="nav-placeholder"></div>
+    <div id="page-content-wrapper">
+        <section class="py-32 min-h-screen relative overflow-hidden flex items-center justify-center">
+            <!-- Background Elements -->
+            <div class="absolute inset-0 stars opacity-30"></div>
+            <div class="absolute inset-0 islamic-pattern opacity-10"></div>
+
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-2xl mx-auto text-center">
+
+                    <div class="mb-8 animate-float">
+                        <i class="fas fa-bullhorn text-6xl text-ramadan-gold opacity-80 decoration-slice"></i>
+                    </div>
+
+                    <div
+                        class="glass-effect rounded-3xl p-8 md:p-12 border border-ramadan-gold/30 relative overflow-hidden">
+                        <div
+                            class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-ramadan-gold to-transparent opacity-50">
+                        </div>
+
+                        <h1 class="text-3xl md:text-4xl font-amiri font-bold text-ramadan-gold mb-8 leading-relaxed">
+                            ✨ الدال على الخير كفاعله ✨
+                        </h1>
+
+                        <div class="bg-black/20 rounded-xl p-6 mb-8 border border-white/5">
+                            <p class="text-xl md:text-2xl font-amiri leading-loose text-white mb-2">
+                                "مَنْ دَلَّ عَلَى خَيْرٍ فَلَهُ مِثْلُ أَجْرِ فَاعِلِهِ"
+                            </p>
+                            <p class="text-sm text-gray-400 mt-2">- حديث شريف</p>
+                        </div>
+
+                        <p class="text-gray-300 mb-8 leading-relaxed">
+                            شارك موقع <span class="text-ramadan-gold font-bold">رمضان كريم</span> مع أهلك وأصدقائك،
+                            واكسب
+                            أجر كل من يستفيد منه في قراءة القرآن، والأذكار، ومتابعة عبادته.
+                        </p>
+
+                        <div class="flex flex-col gap-4">
+                            <button onclick="shareViaWhatsapp()"
+                                class="w-full py-4 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold transition-all shadow-lg shadow-green-900/20 flex items-center justify-center gap-3 group">
+                                <i class="fab fa-whatsapp text-2xl group-hover:scale-110 transition-transform"></i>
+                                <span class="text-lg">مشاركة عبر واتساب</span>
+                            </button>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <button onclick="copyLink()"
+                                    class="py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium transition-all border border-white/10 flex items-center justify-center gap-2">
+                                    <i class="fas fa-link"></i> نسخ الرابط
+                                </button>
+
+                                <button onclick="shareNative()"
+                                    class="py-3 rounded-xl bg-ramadan-gold/10 hover:bg-ramadan-gold/20 text-ramadan-gold font-medium transition-all border border-ramadan-gold/20 flex items-center justify-center gap-2">
+                                    <i class="fas fa-share-nodes"></i> مشاركة عامة
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-white/10">
+                            <p class="text-xs text-gray-500">
+                                اللهم اجعل هذا العمل صدقة جارية لنا ولكم ولجميع المسلمين
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            injectNav('share');
+            injectFooter();
+        });
+
+        const SITE_URL = window.location ? window.location.origin : "https://ramadan-karim.net";
+        const SHARE_TEXT = `رمضان كريم 🌙\n\nتطبيق شامل لحفظ القرآن، والأذكار، ومتابعة العبادات، وتصميم بطاقات المعايدة.\n\n✨ "مَنْ دَلَّ عَلَى خَيْرٍ فَلَهُ مِثْلُ أَجْرِ فَاعِلِهِ"\n\nجربه الآن: ${SITE_URL}`;
+
+        function shareViaWhatsapp() {
+            const url = `https://wa.me/?text=${encodeURIComponent(SHARE_TEXT)}`;
+            window.open(url, '_blank');
+        }
+
+        async function copyLink() {
+            try {
+                await navigator.clipboard.writeText(SITE_URL);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'تم النسخ!',
+                    text: 'تم نسخ رابط الموقع بنجاح.',
+                    background: '#0f172a',
+                    color: '#fff',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function shareNative() {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'رمضان كريم',
+                        text: SHARE_TEXT,
+                        url: SITE_URL
+                    });
+                } catch (err) {
+                    console.log('Share canceled');
+                }
+            } else {
+                copyLink();
+            }
+        }
+    </script>
+    <div id="global-player"></div>
+</body>
+
+</html>
+

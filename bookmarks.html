@@ -1,0 +1,247 @@
+﻿<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>رمضان كريم | المفضلة</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="رمضان كريم">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/share-utils.js?v=v_spa_fixed_v19"></script>
+    <script src="js/main.js?v=v_spa_fixed_v19"></script>
+    <script src="js/notifications.js?v=v_spa_fixed_v19"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+    <link rel="stylesheet" href="css/style.css?v=v_spa_fixed_v19">
+</head>
+
+<body class="bg-ramadan-dark text-white font-tajawal">
+    <div id="nav-placeholder"></div>
+    <div id="page-content-wrapper">
+        <section id="bookmarks" class="py-24 min-h-screen relative overflow-hidden">
+            <div class="absolute inset-0 stars opacity-30"></div>
+            <div class="absolute inset-0 islamic-pattern opacity-10"></div>
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="text-center mb-12">
+                    <span class="text-ramadan-gold text-sm font-bold tracking-wider">قائمة المفضلة</span>
+                    <h2 class="text-4xl lg:text-6xl font-bold mt-2 font-amiri text-white">آيات وأحاديث مختارة</h2>
+                </div>
+
+                <div class="max-w-4xl mx-auto space-y-12">
+                    <!-- Adhkar Bookmarks Section -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-ramadan-gold mb-6 flex items-center gap-3">
+                            <i class="fas fa-praying-hands"></i> الأذكار اليومية
+                        </h3>
+                        <div id="adhkarBookmarks" class="grid gap-6">
+                            <!-- Bookmarks will be injected here -->
+                        </div>
+                    </div>
+
+                    <hr class="border-white/10">
+
+                    <!-- Quran Bookmarks Section -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-ramadan-gold mb-6 flex items-center gap-3">
+                            <i class="fas fa-book-quran"></i> الآيات القرآنية
+                        </h3>
+                        <div id="quranBookmarks" class="grid gap-6">
+                            <!-- Bookmarks will be injected here -->
+                        </div>
+                    </div>
+
+                    <hr class="border-white/10">
+
+                    <!-- Hadith Bookmarks Section -->
+                    <div>
+                        <h3 class="text-2xl font-bold text-ramadan-gold mb-6 flex items-center gap-3">
+                            <i class="fas fa-book-open"></i> الأحاديث النبوية
+                        </h3>
+                        <div id="hadithBookmarks" class="grid gap-6">
+                            <!-- Bookmarks will be injected here -->
+                        </div>
+                    </div>
+
+                    <div id="emptyState" class="hidden text-center py-20 text-gray-400">
+                        <i class="far fa-heart text-6xl mb-4 opacity-20"></i>
+                        <p class="text-xl">لا توجد عناصر في المفضلة بعد</p>
+                        <div class="mt-6 flex justify-center gap-4">
+                            <a href="quran.html"
+                                class="px-6 py-2 bg-ramadan-gold/10 text-ramadan-gold rounded-full hover:bg-ramadan-gold/20 transition-all border border-ramadan-gold/30">اقرأ
+                                القرآن</a>
+                            <a href="hadith.html"
+                                class="px-6 py-2 bg-ramadan-gold/10 text-ramadan-gold rounded-full hover:bg-ramadan-gold/20 transition-all border border-ramadan-gold/30">اقرأ
+                                <a href="hadith.html"
+                                    class="px-6 py-2 bg-ramadan-gold/10 text-ramadan-gold rounded-full hover:bg-ramadan-gold/20 transition-all border border-ramadan-gold/30">اقرأ
+                                    الأحاديث</a>
+                                <a href="adhkar.html"
+                                    class="px-6 py-2 bg-ramadan-gold/10 text-ramadan-gold rounded-full hover:bg-ramadan-gold/20 transition-all border border-ramadan-gold/30">الأذكار</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            injectNav('bookmarks');
+            injectFooter();
+            renderBookmarks();
+        });
+
+        function getBookmarks() {
+            return JSON.parse(localStorage.getItem('ramadan_bookmarks') || '[]');
+        }
+
+        function renderBookmarks() {
+            const bookmarks = getBookmarks();
+            const qContainer = document.getElementById('quranBookmarks');
+            const hContainer = document.getElementById('hadithBookmarks');
+            const aContainer = document.getElementById('adhkarBookmarks');
+            const emptyState = document.getElementById('emptyState');
+
+            qContainer.innerHTML = '';
+            hContainer.innerHTML = '';
+            aContainer.innerHTML = '';
+
+            const quranBms = bookmarks.filter(b => b.type === 'quran');
+            const hadithBms = bookmarks.filter(b => b.type === 'hadith');
+            const adhkarBms = bookmarks.filter(b => b.type === 'adhkar');
+
+            if (bookmarks.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            // Render Quran
+            if (quranBms.length === 0) {
+                qContainer.innerHTML = '<p class="text-gray-500 italic text-center py-4 bg-white/5 rounded-xl border border-dashed border-white/10">لم تقم بحفظ أي آيات بعد</p>';
+            } else {
+                quranBms.forEach((b) => {
+                    const div = document.createElement('div');
+                    div.className = "glass-effect p-6 rounded-xl border-t-2 border-ramadan-gold relative group";
+                    div.innerHTML = `
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-ramadan-gold/10 px-3 py-1 rounded-full border border-ramadan-gold/20 text-xs text-ramadan-gold" id="source-q-${b.suraNumber}-${b.ayahNumber}">
+                                سورة ${b.suraName} - آية ${b.ayahNumber}
+                            </span>
+                             <div class="flex gap-2">
+                                <button onclick="openShareModal('q-${b.suraNumber}-${b.ayahNumber}')" class="text-gray-400 hover:text-ramadan-gold transition-colors p-1" title="مشاركة">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                                <button onclick="removeBookmark('quran', ${b.suraNumber}, ${b.ayahNumber})" 
+                                        class="text-red-500 hover:scale-110 transition-transform p-1" 
+                                        title="حذف من المفضلة">
+                                    <i class="fas fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-xl font-amiri leading-loose mb-4 text-white hover:text-ramadan-gold transition-colors" id="text-q-${b.suraNumber}-${b.ayahNumber}">${b.text}</p>
+                        <div class="flex justify-end">
+                             <a href="quran.html" onclick="localStorage.setItem('lastSura', ${b.suraNumber - 1});" class="text-xs hover:underline text-gray-400 flex items-center gap-1">انتقال للمصحف <i class="fas fa-arrow-left"></i></a>
+                        </div>
+                    `;
+                    qContainer.appendChild(div);
+                });
+            }
+
+            // Render Hadith
+            if (hadithBms.length === 0) {
+                hContainer.innerHTML = '<p class="text-gray-500 italic text-center py-4 bg-white/5 rounded-xl border border-dashed border-white/10">لم تقم بحفظ أي أحاديث بعد</p>';
+            } else {
+                hadithBms.forEach((b) => {
+                    const div = document.createElement('div');
+                    div.className = "glass-effect p-6 rounded-xl border-r-4 border-ramadan-gold relative group";
+                    div.innerHTML = `
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-white/5 px-3 py-1 rounded border border-white/10 text-xs text-gray-400" id="source-h-${b.collection}-${b.id}">المصدر: ${b.collectionName} - رقم ${b.id}</span>
+                            <div class="flex gap-2">
+                                <button onclick="openShareModal('h-${b.collection}-${b.id}')" class="text-gray-400 hover:text-ramadan-gold transition-colors p-1" title="مشاركة">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                                <button onclick="removeBookmark('hadith', '${b.collection}', '${b.id}')" 
+                                        class="text-red-500 hover:scale-110 transition-transform p-1" 
+                                        title="حذف من المفضلة">
+                                    <i class="fas fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-lg font-amiri leading-loose text-gray-100 mb-3" id="text-h-${b.collection}-${b.id}">${b.text}</p>
+                    `;
+                    hContainer.appendChild(div);
+                });
+            }
+
+            // Render Adhkar
+            if (adhkarBms.length === 0) {
+                aContainer.innerHTML = '<p class="text-gray-500 italic text-center py-4 bg-white/5 rounded-xl border border-dashed border-white/10">لم تقم بحفظ أي أذكار بعد</p>';
+            } else {
+                adhkarBms.forEach((b) => {
+                    const div = document.createElement('div');
+                    div.className = "glass-effect p-6 rounded-xl border-t-2 border-ramadan-gold relative group";
+                    div.innerHTML = `
+                        <div class="flex justify-between items-start mb-4">
+                             <span class="bg-white/5 px-3 py-1 rounded border border-white/10 text-xs text-gray-400" id="source-${b.id}">${b.category} - ${b.reference}</span>
+                             <div class="flex gap-2">
+                                <button onclick="openShareModal(${b.id})" class="text-gray-400 hover:text-ramadan-gold transition-colors p-1" title="مشاركة">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                                <button onclick="removeBookmark('adhkar', ${b.id})" 
+                                        class="text-red-500 hover:scale-110 transition-transform p-1" 
+                                        title="حذف من المفضلة">
+                                    <i class="fas fa-trash-can"></i>
+                                </button>
+                             </div>
+                        </div>
+                        <p class="text-lg font-amiri leading-loose text-gray-100 mb-3" id="text-${b.id}">${b.text}</p>
+                    `;
+                    aContainer.appendChild(div);
+                });
+            }
+        }
+
+        function openShareModal(id) {
+            const text = document.getElementById(`text-${id}`).innerText;
+            const source = document.getElementById(`source-${id}`).innerText;
+            // Ensure showShareOptions is available
+            if (typeof showShareOptions === 'function') {
+                showShareOptions(text, source);
+            } else {
+                console.error('Share utils not loaded');
+            }
+        }
+
+        function removeBookmark(type, id1, id2) {
+            let bookmarks = getBookmarks();
+            let index = -1;
+            if (type === 'quran') {
+                index = bookmarks.findIndex(b => b.type === 'quran' && b.suraNumber === id1 && b.ayahNumber === id2);
+            } else if (type === 'hadith') {
+                index = bookmarks.findIndex(b => b.type === 'hadith' && b.collection === id1 && b.id === id2);
+            } else if (type === 'adhkar') {
+                index = bookmarks.findIndex(b => b.type === 'adhkar' && b.id === id1);
+            }
+
+            if (index > -1) {
+                bookmarks.splice(index, 1);
+                localStorage.setItem('ramadan_bookmarks', JSON.stringify(bookmarks));
+                renderBookmarks();
+            }
+        }
+    </script>
+    <div id="global-player"></div>
+</body>
+
+</html>
+

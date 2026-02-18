@@ -1,0 +1,155 @@
+﻿<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>رمضان كريم | الإذاعة</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="رمضان كريم">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/share-utils.js?v=v_spa_fixed_v19"></script>
+    <script src="js/main.js?v=v_spa_fixed_v19"></script>
+    <script src="js/notifications.js?v=v_spa_fixed_v19"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+    <link rel="stylesheet" href="css/style.css?v=v_spa_fixed_v19">
+</head>
+
+<body class="bg-ramadan-dark text-white font-tajawal">
+    <div id="nav-placeholder"></div>
+    <div id="page-content-wrapper">
+        <section id="radio" class="py-24 min-h-screen relative overflow-hidden">
+            <!-- Background Elements -->
+            <div class="absolute inset-0 stars opacity-30"></div>
+            <div class="absolute inset-0 islamic-pattern opacity-10"></div>
+
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="text-center mb-12">
+                    <span class="text-ramadan-gold text-sm font-bold tracking-wider">بث مباشر 24 ساعة</span>
+                    <h2 class="text-3xl lg:text-5xl font-bold mt-2 font-amiri text-white">الإذاعة الإسلامية</h2>
+                </div>
+
+                <div class="max-w-md mx-auto">
+                    <div
+                        class="glass-effect rounded-3xl p-8 text-center border-t-4 border-ramadan-gold relative overflow-hidden group">
+                        <div
+                            class="absolute inset-0 bg-ramadan-gold/5 group-hover:bg-ramadan-gold/10 transition-colors">
+                        </div>
+
+                        <div class="relative z-10">
+                            <div
+                                class="w-24 h-24 mx-auto bg-white/10 rounded-full flex items-center justify-center mb-6">
+                                <i class="fas fa-microphone-alt text-4xl text-ramadan-gold"></i>
+                            </div>
+
+                            <h3 class="text-2xl font-bold mb-2">إذاعة القرآن الكريم</h3>
+                            <p class="text-gray-400 mb-6">من القاهرة</p>
+
+                            <div id="wave-animation"
+                                class="flex justify-center gap-1 h-8 mb-6 opacity-0 transition-opacity">
+                                <span class="w-1 bg-ramadan-gold animate-[wave_1s_infinite]"></span>
+                                <span class="w-1 bg-ramadan-gold animate-[wave_1.2s_infinite]"></span>
+                                <span class="w-1 bg-ramadan-gold animate-[wave_0.8s_infinite]"></span>
+                                <span class="w-1 bg-ramadan-gold animate-[wave_1.1s_infinite]"></span>
+                                <span class="w-1 bg-ramadan-gold animate-[wave_0.9s_infinite]"></span>
+                            </div>
+
+                            <button onclick="toggleRadio()" id="playBtn"
+                                class="w-full py-4 rounded-xl bg-ramadan-gold text-ramadan-dark font-bold hover:bg-white transition-all text-lg flex items-center justify-center gap-3">
+                                <i class="fas fa-play"></i> تشغيل البث
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <audio id="radioAudio" class="hidden"></audio>
+            </div>
+        </section>
+    </div>
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Already handled by spaCore if entering via SPA, but good if direct load
+            injectNav('radio');
+            injectFooter();
+            syncWithGlobalPlayer();
+        });
+
+        // Listen for global audio state changes
+        window.addEventListener('persistentAudioStateChange', (e) => {
+            syncWithGlobalPlayer();
+        });
+
+        const defaultStream = 'https://stream.radiojar.com/8s5u5tpdtwzuv'; // Cairo
+        const backupStream = 'https://backup.qurango.net/radio/mohammed_siddiq_alminshawi_mojawwad'; // Minshawi Backup
+        var currentStream = defaultStream;
+
+        function syncWithGlobalPlayer() {
+            const player = window.persistentPlayer;
+            const isThisRadio = player.currentTrack && player.currentTrack.category === 'radio';
+
+            if (isThisRadio && player.isPlaying) {
+                setUIState(true);
+            } else {
+                setUIState(false);
+            }
+        }
+
+        function toggleRadio() {
+            const player = window.persistentPlayer;
+            const isThisRadio = player.currentTrack && player.currentTrack.src === currentStream;
+
+            if (isThisRadio && player.isPlaying) {
+                player.pause();
+            } else {
+                playRadio();
+            }
+        }
+
+        function playRadio() {
+            const btn = document.getElementById('playBtn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الاتصال...';
+            btn.disabled = true;
+
+            window.persistentPlayer.play({
+                title: 'إذاعة القرآن الكريم',
+                subtitle: 'بث مباشر من القاهرة',
+                icon: 'fas fa-microphone-alt',
+                category: 'radio',
+                src: currentStream
+            });
+
+            // Note: The UI will update via the persistentAudioStateChange event
+        }
+
+        function setUIState(isPlaying) {
+            const btn = document.getElementById('playBtn');
+            const wave = document.getElementById('wave-animation');
+            if (!btn || !wave) return;
+
+            if (isPlaying) {
+                btn.innerHTML = '<i class="fas fa-stop"></i> إيقاف البث';
+                btn.classList.add('bg-red-500', 'text-white');
+                wave.classList.remove('opacity-0');
+            } else {
+                btn.innerHTML = '<i class="fas fa-play"></i> تشغيل البث';
+                btn.classList.remove('bg-red-500', 'text-white');
+                wave.classList.add('opacity-0');
+            }
+            btn.disabled = false;
+        }
+    </script>
+    <div id="global-player"></div>
+</body>
+
+</html>
+

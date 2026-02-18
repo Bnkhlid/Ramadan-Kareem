@@ -1,0 +1,258 @@
+﻿<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="description" content="صمم بطاقة صدقة جارية عن روح من تحب وشاركها لنيال الثواب" />
+    <title>رمضان كريم | صدقة جارية</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="رمضان كريم">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕋</text></svg>" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/share-utils.js?v=v_spa_fixed_v19"></script>
+    <script src="js/main.js?v=v_spa_fixed_v19"></script>
+    <script src="js/notifications.js?v=v_spa_fixed_v19"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+    <link rel="stylesheet" href="css/style.css?v=v_spa_fixed_v19">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ramadan-gold': '#fbbf24',
+                        'ramadan-dark': '#0f172a',
+                        'ramadan-accent': '#d4af37',
+                    },
+                    fontFamily: {
+                        'amiri': ['Amiri', 'serif'],
+                        'tajawal': ['Tajawal', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-premium {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(251, 191, 36, 0.1);
+        }
+
+        .canvas-container::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            background: linear-gradient(45deg, #fbbf24, transparent, #fbbf24);
+            z-index: -1;
+            filter: blur(20px);
+            opacity: 0.2;
+            border-radius: 1.5rem;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #fbbf24;
+            border-radius: 10px;
+        }
+
+        .category-tab.active {
+            background: #fbbf24;
+            color: #0f172a;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2);
+        }
+    </style>
+</head>
+
+<body class="bg-ramadan-dark text-white font-tajawal overflow-x-hidden selection:bg-ramadan-gold/30">
+
+    <!-- Nav Placeholder -->
+    <div id="nav-placeholder"></div>
+    <div id="page-content-wrapper">
+
+        <!-- Hero Section -->
+        <section class="relative pt-32 pb-20 overflow-hidden">
+            <div class="absolute inset-0 stars opacity-40"></div>
+
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="text-center mb-16 animate-fade-in-up">
+                    <h1 class="text-4xl md:text-6xl font-bold font-amiri text-ramadan-gold mb-6">
+                        صدقة جارية للمتوفين
+                    </h1>
+                    <p class="text-gray-400 max-w-2xl mx-auto text-lg">
+                        صمم بطاقة إهداء بآيات قرآنية وأدعية مأثورة لتكون صدقة جارية ونوراً لمن رحلوا.
+                    </p>
+                </div>
+
+                <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+
+                    <!-- Controls -->
+                    <div class="lg:col-span-7 space-y-8">
+
+                        <!-- Name Input -->
+                        <div class="glass-premium p-6 md:p-8 rounded-3xl">
+                            <label class="block text-ramadan-gold font-bold mb-4 text-xl">اسم المتوفى (رحمه
+                                الله):</label>
+                            <input type="text" id="deceasedName" placeholder="اكتب الاسم هنا..."
+                                class="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-white text-xl focus:outline-none focus:border-ramadan-gold transition-all mb-4"
+                                oninput="updateSadaqahPreview()">
+
+                            <!-- Gender Selection -->
+                            <div class="flex items-center gap-6">
+                                <label class="flex items-center gap-2 cursor-pointer group">
+                                    <input type="radio" name="gender" value="male" checked
+                                        onchange="updateSadaqahPreview()" class="hidden peer">
+                                    <div
+                                        class="w-5 h-5 rounded-full border-2 border-white/20 peer-checked:border-ramadan-gold peer-checked:bg-ramadan-gold transition-all">
+                                    </div>
+                                    <span class="text-gray-400 group-hover:text-white transition-colors">ذكر (له)</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer group">
+                                    <input type="radio" name="gender" value="female" onchange="updateSadaqahPreview()"
+                                        class="hidden peer">
+                                    <div
+                                        class="w-5 h-5 rounded-full border-2 border-white/20 peer-checked:border-ramadan-gold peer-checked:bg-ramadan-gold transition-all">
+                                    </div>
+                                    <span class="text-gray-400 group-hover:text-white transition-colors">أنثى
+                                        (لها)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Category Tabs -->
+                        <div class="glass-premium p-6 md:p-8 rounded-3xl">
+                            <label class="block text-ramadan-gold font-bold mb-4 text-xl">اختر نوع المحتوى:</label>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <button onclick="renderCategoryOptions('duas')" id="tab-duas"
+                                    class="category-tab px-6 py-2 rounded-full border border-white/10 text-sm font-bold transition-all active">أدعية</button>
+                                <button onclick="renderCategoryOptions('hadiths')" id="tab-hadiths"
+                                    class="category-tab px-6 py-2 rounded-full border border-white/10 text-sm font-bold transition-all">أحاديث</button>
+                                <button onclick="renderCategoryOptions('verses')" id="tab-verses"
+                                    class="category-tab px-6 py-2 rounded-full border border-white/10 text-sm font-bold transition-all">آيات
+                                    قرآنية</button>
+                                <button onclick="renderCategoryOptions('custom')" id="tab-custom"
+                                    class="category-tab px-6 py-2 rounded-full border border-white/10 text-sm font-bold transition-all">نص
+                                    مخصص</button>
+                            </div>
+
+                            <!-- Content Items Container -->
+                            <div id="contentOptions"
+                                class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto custom-scrollbar p-1">
+                                <!-- Items injected by JS -->
+                            </div>
+
+                            <!-- Custom Text Input (Hidden by default) -->
+                            <div id="customTextContainer" class="hidden animate-fade-in-up">
+                                <textarea id="customSadaqahText" rows="4" maxlength="300"
+                                    placeholder="اكتب النص الذي تريده هنا (بحد أقصى 300 حرف)..."
+                                    class="w-full bg-black/40 border border-ramadan-gold/30 rounded-2xl px-6 py-4 text-white text-lg focus:outline-none focus:border-ramadan-gold transition-all custom-scrollbar"
+                                    oninput="updateSadaqahPreview()"></textarea>
+                                <p class="text-xs text-gray-500 mt-2 text-left">سيتم تنسيق النص تلقائياً ليتناسب مع
+                                    البطاقة.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Themes and Actions -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="glass-premium p-6 rounded-3xl text-center">
+                                <label class="block text-gray-400 text-xs mb-4">اختيار النمط</label>
+                                <div class="flex justify-center gap-3">
+                                    <button onclick="setSadaqahTemplate('solemn')"
+                                        class="template-btn w-10 h-10 rounded-full ring-2 ring-ramadan-gold border-4 border-ramadan-dark bg-slate-900 transition-all"></button>
+                                    <button onclick="setSadaqahTemplate('elegant')"
+                                        class="template-btn w-10 h-10 rounded-full bg-emerald-900 transition-all"></button>
+                                    <button onclick="setSadaqahTemplate('peaceful')"
+                                        class="template-btn w-10 h-10 rounded-full bg-blue-900 transition-all"></button>
+                                </div>
+                            </div>
+
+                            <div class="md:col-span-2 flex gap-4">
+                                <button onclick="downloadSadaqahCard()"
+                                    class="flex-1 bg-ramadan-gold text-ramadan-dark font-black py-5 rounded-2xl hover:brightness-110 shadow-lg shadow-ramadan-gold/20 flex items-center justify-center gap-3">
+                                    <i class="fas fa-download"></i> تحميل
+                                </button>
+                                <button onclick="shareSadaqahCard()"
+                                    class="flex-1 bg-white/5 text-white font-bold py-5 rounded-2xl border border-white/10 hover:bg-white/10 transition-all flex items-center justify-center gap-3">
+                                    <i class="fas fa-share-nodes"></i> مشاركة
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Preview Area -->
+                    <div class="lg:col-span-5 flex flex-col items-center">
+                        <div
+                            class="relative rounded-[2rem] overflow-hidden shadow-2xl bg-[#030712] border border-white/5">
+                            <canvas id="sadaqahCanvas" width="1080" height="1920"
+                                class="w-full max-w-[380px] h-auto"></canvas>
+                        </div>
+                        <p class="mt-6 text-gray-500 text-sm">
+                            <i class="fas fa-magic ml-1"></i> معاينة حية لبطاقة الصدقة
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script src="js/sadaqah.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            injectNav('sadaqah');
+            injectFooter();
+            setTimeout(initSadaqahDesigner, 500);
+
+            // Tab logic
+            window.renderCategoryOptions = (category) => {
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                document.getElementById(`tab-${category}`).classList.add('active');
+
+                // Call original function in JS
+                const originalFunc = window.renderCategoryOptionsInJS;
+                if (typeof window.renderCategoryOptionsInJS === 'function') {
+                    window.renderCategoryOptionsInJS(category);
+                }
+            };
+        });
+    </script>
+</body>
+
+</html>
+

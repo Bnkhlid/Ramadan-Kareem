@@ -1,0 +1,592 @@
+﻿<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>رمضان كريم | المصحف الشريف</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="رمضان كريم">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&family=Scheherazade+New:wght@400;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/share-utils.js?v=v_spa_fixed_v19"></script>
+    <script src="js/main.js?v=v_spa_fixed_v19"></script>
+    <script src="js/notifications.js?v=v_spa_fixed_v19"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+    <link rel="stylesheet" href="css/style.css?v=v_spa_fixed_v19">
+</head>
+
+<body class="bg-ramadan-dark text-white font-tajawal">
+    <div id="nav-placeholder"></div>
+    <div id="page-content-wrapper">
+        <section id="quran" class="py-24 min-h-screen relative overflow-hidden">
+            <!-- Background Elements -->
+            <div class="absolute inset-0 stars opacity-30"></div>
+            <div class="absolute inset-0 islamic-pattern opacity-10"></div>
+
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="text-center mb-8">
+                    <span class="text-ramadan-gold text-sm font-bold tracking-wider">كتاب الله الكريم</span>
+                    <h2 class="text-3xl lg:text-5xl font-bold mt-2 font-amiri text-white">المصحف الشريف</h2>
+                </div>
+
+                <div class="quran-container-wide">
+                    <!-- Control Bar -->
+                    <div
+                        class="glass-effect rounded-2xl p-4 mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div class="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+                            <select id="suraSelect"
+                                class="w-full md:w-64 p-3 rounded-xl bg-ramadan-dark border border-ramadan-gold/30 text-white focus:outline-none focus:border-ramadan-gold">
+                                <option value="">اختر السورة...</option>
+                            </select>
+                            <div class="relative w-full md:w-64">
+                                <input type="text" id="searchInput" placeholder="ابحث في القرآن..."
+                                    class="w-full p-3 pr-10 rounded-xl bg-ramadan-dark border border-ramadan-gold/30 text-white placeholder-gray-500 focus:outline-none focus:border-ramadan-gold"
+                                    oninput="searchQuran()">
+                                <i
+                                    class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-ramadan-gold/50"></i>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <button onclick="changeFontSize(1)"
+                                class="w-10 h-10 rounded-full bg-white/10 hover:bg-ramadan-gold/20 text-white transition-all flex items-center justify-center"
+                                title="تكبير الخط">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button onclick="changeFontSize(-1)"
+                                class="w-10 h-10 rounded-full bg-white/10 hover:bg-ramadan-gold/20 text-white transition-all flex items-center justify-center"
+                                title="تصغير الخط">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <div class="h-8 w-px bg-white/10 mx-2"></div>
+                            <!-- Toggle View Mode -->
+                            <button onclick="toggleViewMode()" id="viewModeBtn"
+                                class="px-4 py-2 rounded-full bg-ramadan-gold/20 text-ramadan-gold hover:bg-ramadan-gold/30 transition-all text-sm font-bold flex items-center gap-2">
+                                <i class="fas fa-th-large"></i> <span>عرض بطاقات</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Content Area -->
+                    <div id="quranContainer" class="min-h-[500px] glass-effect rounded-2xl p-6 md:p-10 relative">
+                        <div id="loading"
+                            class="absolute inset-0 flex flex-col items-center justify-center bg-ramadan-dark/80 z-10 hidden">
+                            <div class="loader mb-4"></div>
+                            <p class="text-ramadan-gold animate-pulse">جاري تحميل السورة...</p>
+                        </div>
+
+                        <div id="bismillah" class="text-center text-3xl font-amiri text-ramadan-gold mb-8 hidden">
+                            بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+                        </div>
+
+                        <div id="versesContent" class="quran-text text-center" style="font-size: 26px;">
+                            <!-- Verses will be inserted here -->
+                            <div class="flex flex-col items-center justify-center h-64 text-gray-500">
+                                <i class="fas fa-book-open text-6xl mb-4 opacity-30"></i>
+                                <p class="text-xl">اختر سورة للبدء</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="flex justify-between mt-6">
+                        <button onclick="prevSura()"
+                            class="px-6 py-3 rounded-xl bg-white/5 hover:bg-ramadan-gold/20 flex items-center gap-2 transition-all">
+                            <i class="fas fa-arrow-right"></i> السورة السابقة
+                        </button>
+                        <button onclick="nextSura()"
+                            class="px-6 py-3 rounded-xl bg-white/5 hover:bg-ramadan-gold/20 flex items-center gap-2 transition-all">
+                            السورة التالية <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="footer-placeholder"></div>
+
+    <script>
+        var quranData = [];
+        var currentSuraIndex = 0;
+        var viewMode = 'cards'; // 'cards' or 'inline'
+
+        document.addEventListener("DOMContentLoaded", () => {
+            injectNav('quran');
+            injectFooter();
+            fetchQuran();
+        });
+
+        async function fetchQuran() {
+            try {
+                const res = await fetch("https://api.alquran.cloud/v1/quran/quran-uthmani");
+                const data = await res.json();
+                quranData = data.data.surahs;
+                populateSelect();
+            } catch (err) {
+                console.error(err);
+                alert("فشل تحميل المصحف. يرجى التحقق من الاتصال بالإنترنت.");
+            }
+        }
+
+        function populateSelect() {
+            const select = document.getElementById("suraSelect");
+            quranData.forEach((sura, index) => {
+                const opt = document.createElement("option");
+                opt.value = index;
+                opt.textContent = `${sura.number}. ${sura.name}`;
+                select.appendChild(opt);
+            });
+
+            select.addEventListener("change", (e) => {
+                if (e.target.value !== "") loadSura(parseInt(e.target.value));
+            });
+        }
+
+        function loadSura(index) {
+            currentSuraIndex = index;
+            const sura = quranData[index];
+            document.getElementById("suraSelect").value = index;
+
+            // Show Bismillah except for Tawbah (9)
+            const bismillah = document.getElementById("bismillah");
+            if (sura.number === 9) bismillah.classList.add("hidden");
+            else bismillah.classList.remove("hidden");
+
+            renderVerses(sura);
+        }
+
+        function renderVerses(sura) {
+            const container = document.getElementById("versesContent");
+            container.innerHTML = "";
+
+            if (viewMode === 'cards') {
+                container.className = "quran-text text-center space-y-6"; // Ensure vertical spacing
+                sura.ayahs.forEach(ayah => {
+                    // Start of card
+                    const div = document.createElement("div");
+                    div.className = "ayah-card relative group hover:bg-white/5 transition-colors"; // Styles from CSS
+
+                    // Verse text
+                    // Verse text
+                    div.innerHTML = `
+                        <div class="leading-loose mb-6 text-white group-hover:text-ramadan-gold transition-colors select-none text-xl md:text-2xl px-2 text-center font-amiri" id="ayah-text-${ayah.numberInSurah}">
+                            ${ayah.text}
+                        </div>
+                        
+                        <!-- Card Footer -->
+                        <div class="flex items-center justify-between border-t border-white/5 pt-4 mt-2">
+                             <div class="flex items-center gap-2">
+                                <!-- Share Button -->
+                                <button onclick="showShareOptions('${ayah.text.replace(/'/g, "\\'")}', 'سورة ${sura.name} - آية ${ayah.numberInSurah}')" 
+                                        class="w-10 h-10 rounded-full bg-white/5 hover:bg-ramadan-gold/20 text-gray-400 hover:text-ramadan-gold transition-all flex items-center justify-center" 
+                                        title="مشاركة">
+                                    <i class="fas fa-share-alt text-lg"></i>
+                                </button>
+                                <!-- Heart (Favorites) -->
+                                <button onclick="toggleBookmark('quran', ${sura.number}, '${sura.name}', ${ayah.numberInSurah}, '${ayah.text.replace(/'/g, "\\'")}')" 
+                                        class="w-10 h-10 rounded-full bg-white/5 hover:bg-ramadan-gold/20 text-gray-400 hover:text-red-500 transition-all flex items-center justify-center" 
+                                        id="bm-quran-${sura.number}-${ayah.numberInSurah}" title="حفظ في المفضلة">
+                                    <i class="${isBookmarked('quran', sura.number, ayah.numberInSurah) ? 'fas' : 'far'} fa-heart text-lg"></i>
+                                </button>
+                                <!-- Bookmark (Last Read) -->
+                                <button onclick="setLastRead(${sura.number}, '${sura.name}', ${ayah.numberInSurah})" 
+                                        class="w-10 h-10 rounded-full bg-white/5 hover:bg-ramadan-gold/20 text-gray-400 hover:text-ramadan-gold transition-all flex items-center justify-center" 
+                                        id="last-read-btn-${sura.number}-${ayah.numberInSurah}" title="علامة القراءة (توقف هنا)">
+                                    <i class="${isLastRead(sura.number, ayah.numberInSurah) ? 'fas' : 'far'} fa-bookmark text-lg"></i>
+                                </button>
+                             </div>
+
+                             <span class="inline-flex items-center justify-center w-8 h-8 text-sm border border-ramadan-gold/40 rounded-full text-ramadan-gold/80 font-sans number-symbol">
+                                ${ayah.numberInSurah}
+                             </span>
+                        </div>
+                    `;
+                    container.appendChild(div);
+
+                    // Setup Long Press
+                    const textDiv = div.querySelector(`#ayah-text-${ayah.numberInSurah}`);
+                    setupLongPress(textDiv, () => {
+                        showShareOptions(ayah.text, `سورة ${sura.name} - آية ${ayah.numberInSurah}`);
+                        // Vibration feedback if available
+                        if (navigator.vibrate) navigator.vibrate(50);
+                    });
+                });
+            } else {
+                // Inline View (Mushaf Style)
+                container.className = "quran-text text-justify leading-loose px-4 md:px-12";
+                let html = "";
+                sura.ayahs.forEach(ayah => {
+                    const bookmarked = isBookmarked('quran', sura.number, ayah.numberInSurah);
+                    html += `
+                        <span class="inline hover:text-ramadan-gold transition-colors duration-200 relative group/inline cursor-pointer select-none" 
+                              title="آية ${ayah.numberInSurah}" 
+                              id="inline-ayah-${ayah.numberInSurah}">
+                            ${ayah.text} 
+                            <span class="inline-flex items-center justify-center h-8 w-8 mx-1 bg-contain bg-no-repeat bg-center text-[14px] text-ramadan-gold/80 font-sans relative" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><circle cx=%2216%22 cy=%2216%22 r=%2215%22 fill=%22none%22 stroke=%22%23fbbf24%22 stroke-opacity=%220.4%22 stroke-width=%221%22 /></svg>');">
+                                ${ayah.numberInSurah}
+                                    <!-- Heart (Favorites) -->
+                                    <button onclick="toggleBookmark('quran', ${sura.number}, '${sura.name}', ${ayah.numberInSurah}, '${ayah.text.replace(/'/g, "\\'")}')" 
+                                            class="absolute -top-6 left-0 p-4 -m-4 text-[12px] ${bookmarked ? 'text-red-500 opacity-100' : 'text-gray-500 opacity-20 lg:opacity-0 group-hover/inline:opacity-100'} transition-all" 
+                                            id="bm-quran-${sura.number}-${ayah.numberInSurah}-inline" title="مفضلة">
+                                        <i class="${bookmarked ? 'fas' : 'far'} fa-heart"></i>
+                                    </button>
+                                    <!-- Bookmark (Last Read) -->
+                                    <button onclick="setLastRead(${sura.number}, '${sura.name}', ${ayah.numberInSurah})" 
+                                            class="absolute -top-6 right-0 p-4 -m-4 text-[12px] ${isLastRead(sura.number, ayah.numberInSurah) ? 'text-ramadan-gold opacity-100' : 'text-gray-500 opacity-20 lg:opacity-0 group-hover/inline:opacity-100'} transition-all" 
+                                            id="last-read-btn-inline-${sura.number}-${ayah.numberInSurah}" title="علامة القراءة">
+                                        <i class="${isLastRead(sura.number, ayah.numberInSurah) ? 'fas' : 'far'} fa-bookmark"></i>
+                                    </button>
+                            </span>
+                        </span>
+                    `;
+                });
+                container.innerHTML = html;
+
+                // Attach Long Press for Inline Mode
+                sura.ayahs.forEach(ayah => {
+                    const span = document.getElementById(`inline-ayah-${ayah.numberInSurah}`);
+                    if (span) {
+                        setupLongPress(span, () => {
+                            showShareOptions(ayah.text, `سورة ${sura.name} - آية ${ayah.numberInSurah}`);
+                            if (navigator.vibrate) navigator.vibrate(50);
+                        });
+                        // Also double click to share
+                        span.addEventListener('dblclick', () => {
+                            showShareOptions(ayah.text, `سورة ${sura.name} - آية ${ayah.numberInSurah}`);
+                        });
+                    }
+                });
+            }
+        }
+
+        function toggleViewMode() {
+            viewMode = viewMode === 'cards' ? 'inline' : 'cards';
+            const btn = document.getElementById("viewModeBtn");
+            if (viewMode === 'cards') {
+                btn.innerHTML = '<i class="fas fa-th-large"></i> <span>عرض بطاقات</span>';
+            } else {
+                btn.innerHTML = '<i class="fas fa-align-justify"></i> <span>سرد متصل</span>';
+            }
+            if (quranData[currentSuraIndex]) renderVerses(quranData[currentSuraIndex]);
+        }
+
+        function changeFontSize(delta) {
+            const el = document.getElementById("versesContent");
+            const current = parseInt(el.style.fontSize) || 26;
+            const newSize = Math.max(16, Math.min(60, current + delta));
+            el.style.fontSize = newSize + "px";
+        }
+
+        function nextSura() {
+            if (currentSuraIndex < 113) loadSura(currentSuraIndex + 1);
+        }
+
+        function prevSura() {
+            if (currentSuraIndex > 0) loadSura(currentSuraIndex - 1);
+        }
+
+
+        var searchTimeout;
+
+        function searchQuran() {
+            clearTimeout(searchTimeout);
+
+            // Debounce for 300ms
+            searchTimeout = setTimeout(() => {
+                performSearch();
+            }, 300);
+        }
+
+        function performSearch() {
+            const query = normalizeArabic(document.getElementById('searchInput').value);
+
+            if (!query) {
+                // If search is empty, show current sura
+                if (quranData[currentSuraIndex]) {
+                    renderVerses(quranData[currentSuraIndex]);
+                }
+                return;
+            }
+
+            // Search through all surahs and ayahs
+            const results = [];
+            const MAX_RESULTS = 50; // Limit results to prevent crash
+
+            // Use a simple loop for performance to break early if needed
+            // But we want to search everything? No, let's just find first 50 matches
+
+            let count = 0;
+
+            for (let sIndex = 0; sIndex < quranData.length; sIndex++) {
+                const sura = quranData[sIndex];
+                if (count >= MAX_RESULTS) break;
+
+                for (let aIndex = 0; aIndex < sura.ayahs.length; aIndex++) {
+                    const ayah = sura.ayahs[aIndex];
+                    const normalizedAyah = normalizeArabic(ayah.text);
+
+                    if (normalizedAyah.includes(query)) {
+                        results.push({
+                            suraIndex: sIndex,
+                            suraName: sura.name,
+                            suraNumber: sura.number,
+                            ayahNumber: ayah.numberInSurah,
+                            ayahText: ayah.text
+                        });
+                        count++;
+                        if (count >= MAX_RESULTS) break;
+                    }
+                }
+            }
+
+            // Display results
+            const container = document.getElementById('versesContent');
+            const bismillah = document.getElementById('bismillah');
+            bismillah.classList.add('hidden');
+
+            if (results.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-64 text-gray-500">
+                        <i class="fas fa-search text-6xl mb-4 opacity-30"></i>
+                        <p class="text-xl">لا توجد نتائج للبحث عن "${document.getElementById('searchInput').value}"</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Show results
+            container.className = "quran-text text-center space-y-6";
+            let resultsHTML = `
+                <div class="mb-6 p-4 bg-ramadan-gold/10 rounded-xl border border-ramadan-gold/30">
+                    <p class="text-ramadan-gold font-bold">
+                        <i class="fas fa-check-circle ml-2"></i>
+                        تم العثور على ${results.length}${results.length >= MAX_RESULTS ? '+' : ''} نتيجة
+                    </p>
+                </div>
+            `;
+
+            results.forEach(result => {
+                // Highlight the search term logic...
+                // Only reconstruct the needed improvements
+
+                const normalizedText = normalizeArabic(result.ayahText);
+                const queryIndex = normalizedText.indexOf(query);
+
+                let highlightedText = result.ayahText;
+
+                if (queryIndex !== -1) {
+                    // Find the actual word in the original text
+                    // Simple heuristic: map indices roughly or just highlight matching words if possible
+                    // Re-using the complex logic from before but cleaner or simplified? 
+                    // Let's stick to the existing logic which was fine, just copying it here.
+
+                    let charCount = 0;
+                    let startIndex = 0;
+                    for (let i = 0; i < result.ayahText.length; i++) {
+                        // Check if char is not a diacritic
+                        if (!/[\u064B-\u065F\u0670]/.test(result.ayahText[i])) {
+                            if (charCount === queryIndex) {
+                                startIndex = i;
+                                break;
+                            }
+                            charCount++;
+                        }
+                    }
+
+                    // Find end index
+                    charCount = 0;
+                    let endIndex = startIndex;
+                    for (let i = startIndex; i < result.ayahText.length; i++) {
+                        if (!/[\u064B-\u065F\u0670]/.test(result.ayahText[i])) {
+                            charCount++;
+                            if (charCount > query.length) break;
+                        }
+                        endIndex = i;
+                    }
+
+                    const before = result.ayahText.substring(0, startIndex);
+                    const match = result.ayahText.substring(startIndex, endIndex + 1);
+                    const after = result.ayahText.substring(endIndex + 1);
+
+                    highlightedText = `${before}<mark class="bg-ramadan-gold/30 text-white rounded px-1">${match}</mark>${after}`;
+                }
+
+                resultsHTML += `
+                <div class="ayah-card relative group hover:bg-white/5 transition-colors cursor-pointer" 
+                     onclick="document.getElementById('searchInput').value = ''; loadSura(${result.suraIndex});">
+                    <div class="text-xs text-ramadan-gold mb-2 font-bold">
+                        ${result.suraName} - آية ${result.ayahNumber}
+                    </div>
+                    <div class="leading-loose mb-4 text-white group-hover:text-ramadan-gold transition-colors">
+                        ${highlightedText}
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex items-center gap-2 pt-3 border-t border-white/10">
+                        <!-- Share Button -->
+                        <button onclick="event.stopPropagation(); showShareOptions('${result.ayahText.replace(/'/g, "\\'")}', 'سورة ${result.suraName} - آية ${result.ayahNumber}')" 
+                                class="w-9 h-9 rounded-full bg-white/5 hover:bg-ramadan-gold/20 text-gray-400 hover:text-ramadan-gold transition-colors flex items-center justify-center" 
+                                title="مشاركة">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                        <!-- Heart (Favorites) -->
+                        <button onclick="event.stopPropagation(); toggleBookmark('quran', ${result.suraNumber}, '${result.suraName}', ${result.ayahNumber}, '${result.ayahText.replace(/'/g, "\\'")}')\" 
+                                class="w-9 h-9 rounded-full bg-white/5 hover:bg-ramadan-gold/20 text-gray-400 hover:text-red-500 transition-colors flex items-center justify-center" 
+                                id="bm-quran-${result.suraNumber}-${result.ayahNumber}" title="حفظ في المفضلة">
+                            <i class="${isBookmarked('quran', result.suraNumber, result.ayahNumber) ? 'fas' : 'far'} fa-heart"></i>
+                        </button>
+                        <!-- Bookmark (Last Read) -->
+                        <button onclick="event.stopPropagation(); setLastRead(${result.suraNumber}, '${result.suraName}', ${result.ayahNumber})" 
+                                class="w-9 h-9 rounded-full bg-white/5 hover:bg-ramadan-gold/20 text-gray-400 hover:text-ramadan-gold transition-colors flex items-center justify-center" 
+                                id="last-read-btn-${result.suraNumber}-${result.ayahNumber}" title="علامة القراءة">
+                            <i class="${isLastRead(result.suraNumber, result.ayahNumber) ? 'fas' : 'far'} fa-bookmark"></i>
+                        </button>
+                        <div class="flex-1"></div>
+                        <div class="text-xs text-gray-400">
+                            <i class="fas fa-hand-pointer ml-1"></i>
+                            اضغط للذهاب إلى السورة
+                        </div>
+                    </div>
+                </div>`;
+            });
+
+            container.innerHTML = resultsHTML;
+        }
+        // --- Bookmark Logic ---
+        function getBookmarks() {
+            return JSON.parse(localStorage.getItem('ramadan_bookmarks') || '[]');
+        }
+
+        function isBookmarked(type, id1, id2) {
+            const bookmarks = getBookmarks();
+            if (type === 'quran') {
+                return bookmarks.some(b => b.type === 'quran' && b.suraNumber === id1 && b.ayahNumber === id2);
+            }
+            return false;
+        }
+
+        function toggleBookmark(type, id1, name, id2, text) {
+            let bookmarks = getBookmarks();
+            const index = bookmarks.findIndex(b => b.type === 'quran' && b.suraNumber === id1 && b.ayahNumber === id2);
+
+            const btn = document.getElementById(`bm-${type}-${id1}-${id2}`);
+            const btnInline = document.getElementById(`bm-${type}-${id1}-${id2}-inline`);
+
+            if (index > -1) {
+                bookmarks.splice(index, 1);
+                if (btn) {
+                    const icon = btn.querySelector('i');
+                    icon.className = 'far fa-heart';
+                    btn.classList.remove('text-red-500');
+                    btn.classList.add('text-gray-400');
+                }
+                if (btnInline) {
+                    const iconInline = btnInline.querySelector('i');
+                    iconInline.className = 'far fa-heart';
+                    btnInline.classList.remove('text-red-500', 'opacity-100');
+                    btnInline.classList.add('text-gray-500', 'opacity-0');
+                }
+            } else {
+                bookmarks.push({ type, suraNumber: id1, suraName: name, ayahNumber: id2, text });
+                if (btn) {
+                    const icon = btn.querySelector('i');
+                    icon.className = 'fas fa-heart text-red-500';
+                    btn.classList.remove('text-gray-400');
+                    btn.classList.add('text-red-500');
+                }
+                if (btnInline) {
+                    const iconInline = btnInline.querySelector('i');
+                    iconInline.className = 'fas fa-heart text-red-500';
+                    btnInline.classList.remove('text-gray-500', 'opacity-0');
+                    btnInline.classList.add('text-red-500', 'opacity-100');
+                }
+            }
+
+            localStorage.setItem('ramadan_bookmarks', JSON.stringify(bookmarks));
+        }
+
+        // --- Last Read Logic ---
+        function setLastRead(suraNum, suraName, ayahNum) {
+            const data = { suraNumber: suraNum, suraName: suraName, ayahNumber: ayahNum, timestamp: new Date() };
+            localStorage.setItem('ramadan_last_read', JSON.stringify(data));
+
+            // UI Feedback - Reset ALL bookmark icons (both card and inline)
+            document.querySelectorAll('[id^="last-read-btn-"]').forEach(el => {
+                const icon = el.querySelector('i');
+                if (icon) {
+                    icon.className = 'far fa-bookmark';
+                }
+                // Remove gold color from inline buttons
+                el.classList.remove('text-ramadan-gold', 'opacity-100');
+            });
+
+            // Set active for BOTH card and inline views
+            const btnCard = document.getElementById(`last-read-btn-${suraNum}-${ayahNum}`);
+            const btnInline = document.getElementById(`last-read-btn-inline-${suraNum}-${ayahNum}`);
+
+            if (btnCard) {
+                btnCard.querySelector('i').className = 'fas fa-bookmark text-ramadan-gold';
+            }
+            if (btnInline) {
+                btnInline.querySelector('i').className = 'fas fa-bookmark';
+                btnInline.classList.add('text-ramadan-gold', 'opacity-100');
+            }
+
+            Swal.fire({
+                title: 'تم الحفظ',
+                text: `تم وضع العلامة عند سورة ${suraName} آية ${ayahNum}`,
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end',
+                background: '#0f172a', color: '#fff'
+            });
+        }
+
+        function isLastRead(suraNum, ayahNum) {
+            const saved = JSON.parse(localStorage.getItem('ramadan_last_read'));
+            if (!saved) return false;
+            return saved.suraNumber === suraNum && saved.ayahNumber === ayahNum;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Check for smart link from Tracker
+            const openSurah = sessionStorage.getItem('open_surah_on_load');
+            if (openSurah) {
+                // Clear it so it doesn't persist
+                sessionStorage.removeItem('open_surah_on_load');
+
+                // Small delay to ensure quranData is loaded
+                setTimeout(() => {
+                    // loadSura takes index (0-based)
+                    if (typeof loadSura === 'function') {
+                        loadSura(parseInt(openSurah) - 1);
+                        Swal.fire({
+                            title: 'مرحباً بعودتك',
+                            text: 'تم توجيهك لآخر سورة كنت تقرأها',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false,
+                            position: 'top-end',
+                            toast: true,
+                            background: '#0f172a', color: '#fff'
+                        });
+                    }
+                }, 800);
+            }
+        });
+    </script>
+    <div id="global-player"></div>
+</body>
+
+</html>
+

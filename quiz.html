@@ -1,0 +1,846 @@
+﻿<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="مساعد الحفظ" />
+    <title>رمضان كريم | مساعد الحفظ</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&family=Scheherazade+New:wght@400;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/share-utils.js?v=v_spa_fixed_v19"></script>
+    <script src="js/main.js?v=v_spa_fixed_v19"></script>
+    <script src="js/notifications.js?v=v_spa_fixed_v19"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+    <link rel="stylesheet" href="css/style.css?v=v_spa_fixed_v19">
+    <style>
+        .hidden-word {
+            background-color: rgba(251, 191, 36, 0.15);
+            color: transparent !important;
+            border-bottom: 2px dashed rgba(251, 191, 36, 0.6);
+            cursor: pointer;
+            border-radius: 4px;
+            padding: 0 4px;
+            transition: all 0.3s ease;
+            user-select: none;
+            display: inline-block;
+            margin: 0 2px;
+        }
+
+        .hidden-word:hover {
+            background-color: rgba(251, 191, 36, 0.3);
+        }
+
+        .hidden-word.revealed {
+            color: #fbbf24 !important;
+            background-color: transparent !important;
+            border-bottom: none !important;
+        }
+
+
+
+        @keyframes pop {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .animate-pop {
+            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #statsPanel {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #micBtn.listening {
+            animation: micPulseOverlay 1.5s infinite;
+        }
+
+        @keyframes micPulseOverlay {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+    </style>
+</head>
+
+<body class="bg-ramadan-dark text-white font-tajawal">
+    <div id="nav-placeholder"></div>
+    <div id="page-content-wrapper">
+        <section id="quiz" class="py-24 min-h-screen relative overflow-hidden">
+            <div class="absolute inset-0 stars opacity-30"></div>
+            <div class="absolute inset-0 islamic-pattern opacity-10"></div>
+
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="text-center mb-8">
+                    <span class="text-ramadan-gold text-sm font-bold tracking-wider">وَلَقَدْ يَسَّرْنَا الْقُرْآنَ
+                        لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ</span>
+                    <h2 class="text-3xl lg:text-5xl font-bold mt-2 font-amiri text-white">مساعد الحفظ</h2>
+                    <p class="text-gray-400 mt-2">اختبر حفظك بإخفاء بعض الكلمات من الآيات</p>
+                </div>
+
+                <div class="max-w-4xl mx-auto">
+                    <div class="glass-effect rounded-2xl p-6 mb-6 flex flex-col gap-6">
+                        <div class="flex flex-col md:flex-row items-center gap-4 justify-between">
+                            <div class="w-full md:w-1/2">
+                                <label class="block text-gray-400 text-sm mb-2">اختر السورة:</label>
+                                <select id="suraSelect"
+                                    class="w-full p-3 rounded-xl bg-ramadan-dark border border-ramadan-gold/30 text-white focus:outline-none focus:border-ramadan-gold">
+                                    <option value="">جاري التحميل...</option>
+                                </select>
+                            </div>
+                            <div class="w-full md:w-1/2">
+                                <label class="block text-gray-400 text-sm mb-2">مستوى الاختبار:</label>
+                                <div class="flex bg-ramadan-dark rounded-xl p-1 border border-ramadan-gold/20">
+                                    <button onclick="setDifficulty('easy')" id="btn-easy"
+                                        class="flex-1 py-2 rounded-lg text-sm transition-all text-gray-400">10%</button>
+                                    <button onclick="setDifficulty('medium')" id="btn-medium"
+                                        class="flex-1 py-2 rounded-lg text-sm transition-all text-gray-400">30%</button>
+                                    <button onclick="setDifficulty('hard')" id="btn-hard"
+                                        class="flex-1 py-2 rounded-lg text-sm transition-all text-gray-400">50%</button>
+                                    <button onclick="setDifficulty('expert')" id="btn-expert"
+                                        class="flex-1 py-2 rounded-lg text-sm transition-all text-gray-400">80%</button>
+                                    <button onclick="setDifficulty('master')" id="btn-master"
+                                        class="flex-1 py-2 rounded-lg text-sm transition-all text-gray-400">100%</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="statsPanel" class="hidden glass-effect rounded-2xl p-4 mb-6 border border-ramadan-gold/20">
+                        <div class="flex justify-around items-center text-center">
+                            <div>
+                                <div class="text-xs text-gray-400 mb-1">الكلمات المخفية</div>
+                                <div class="text-xl font-bold text-ramadan-gold" id="statsHiddenCount">0</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-400 mb-1">تم كشفها</div>
+                                <div class="text-xl font-bold text-emerald-500" id="statsRevealedCount">0</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-400 mb-1">المتبقي</div>
+                                <div class="text-xl font-bold text-white" id="statsRemainingCount">0</div>
+                            </div>
+                            <button onclick="regenerateTest()"
+                                class="text-gray-400 hover:text-ramadan-gold transition-colors p-2"
+                                title="إعادة التوزيع">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="glass-effect rounded-3xl p-8 border border-white/5 relative">
+                        <div id="bismillah" class="text-center text-3xl font-amiri text-ramadan-gold mb-8 hidden">بِسْمِ
+                            اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+                        <div id="versesContent" class="space-y-8 text-2xl md:text-3xl leading-loose text-center">
+                            <div class="flex flex-col items-center justify-center py-12 text-gray-500">
+                                <i class="fas fa-book-quran text-5xl mb-4 opacity-20"></i>
+                                <p>اختر سورة للبدء في الاختبار</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-8 px-4">
+                        <button onclick="prevSura()"
+                            class="flex items-center gap-2 text-gray-400 hover:text-ramadan-gold transition-colors">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>السورة السابقة</span>
+                        </button>
+                        <button onclick="nextSura()"
+                            class="flex items-center gap-2 text-gray-400 hover:text-ramadan-gold transition-colors">
+                            <span>السورة التالية</span>
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="footer-placeholder"></div>
+
+    <!-- Microphone Button (outside wrapper, managed manually) -->
+    <div class="fixed bottom-6 left-6 z-50" id="micBtnWrapper">
+        <button id="micBtn" onclick="toggleListening()"
+            class="w-16 h-16 rounded-full bg-ramadan-gold text-ramadan-dark shadow-lg shadow-ramadan-gold/30 flex items-center justify-center transition-all hover:scale-105 active:scale-95">
+            <i class="fas fa-microphone text-2xl"></i>
+        </button>
+        <div id="micPulse" class="absolute inset-0 rounded-full bg-ramadan-gold opacity-0 z-[-1] transition-all"></div>
+    </div>
+
+    <!-- Listening Indicator -->
+    <div id="listeningIndicator" class="fixed top-24 left-1/2 -translate-x-1/2 bg-red-500/90 text-white px-6 py-2 rounded-full backdrop-blur-md shadow-lg z-50 hidden transition-all flex items-center gap-3">
+        <div class="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+        جاري الاستماع...
+    </div>
+
+    <!-- Debug Status Overlay -->
+    <div id="debugStatus" class="fixed top-36 left-1/2 -translate-x-1/2 bg-black/80 text-green-400 text-xs px-4 py-2 rounded z-50 font-mono hidden dir-ltr">
+        Status: Ready
+    </div>
+
+    <script>
+        // Use window scope for variables to be robust in SPA
+        window.quranData = window.quranData || [];
+        window.currentSuraIndex = window.currentSuraIndex || 0;
+        window.difficulty = window.difficulty || 0.1;
+
+        // --- Speech Recognition Variables ---
+        let recognition = null;
+        let isListening = false;
+        // State is managed via .passed class on DOM elements
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initQuiz();
+        });
+
+        // SPA support
+        window.addEventListener('spaPageLoaded', () => {
+            if (window.location.href.includes('quiz.html')) {
+                initQuiz();
+            }
+        });
+
+        // Stop mic when leaving the page (SPA navigation)
+        window.addEventListener('spaPageUnload', () => {
+            stopRecognition();
+            // Remove mic UI elements from DOM so they don't persist on other pages
+            ['micBtnWrapper', 'listeningIndicator', 'debugStatus'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.remove();
+            });
+        });
+
+        // Stop mic when tab is hidden or user switches away
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stopRecognition();
+            }
+        });
+
+        function stopRecognition() {
+            if (recognition && isListening) {
+                isListening = false;
+                try { recognition.abort(); } catch(e) {}
+                updateMicUI(false);
+            }
+        }
+
+        function initQuiz() {
+            injectNav('quiz');
+            injectFooter();
+            fetchQuran();
+            initSpeechRecognition();
+        }
+
+        async function fetchQuran() {
+            const select = document.getElementById("suraSelect");
+            
+            try {
+                // 1. Try to load from cache first
+                const savedData = localStorage.getItem('quran_data_cache');
+                if (savedData) {
+                    try {
+                        window.quranData = JSON.parse(savedData);
+                        if (Array.isArray(window.quranData) && window.quranData.length > 0) {
+                            populateSelect();
+                            return;
+                        }
+                    } catch (e) {
+                        console.warn("Corrupted cache, reloading...");
+                    }
+                }
+
+                // 2. Fetch from API if no cache or corrupted
+                if(select) select.innerHTML = '<option value="">جاري تحميل المصحف...</option>';
+                
+                const res = await fetch("https://api.alquran.cloud/v1/quran/quran-uthmani");
+                if (!res.ok) throw new Error("Network response was not ok");
+                
+                const data = await res.json();
+                window.quranData = data.data.surahs;
+                
+                // 3. Update UI first (Priority)
+                populateSelect();
+
+                // 4. Try to save to cache (Non-blocking)
+                try {
+                    localStorage.setItem('quran_data_cache', JSON.stringify(window.quranData));
+                } catch (storageErr) {
+                    console.warn("LocalStorage full or disabled. App will work but data won't persist.", storageErr);
+                }
+
+            } catch (err) {
+                console.error("Failed to load Quran:", err);
+                if(select) select.innerHTML = '<option value="">فشل التحميل - اضغط لإعادة المحاولة</option>';
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ في التحميل',
+                    text: 'تأكد من اتصالك بالإنترنت وحاول مرة أخرى',
+                    confirmButtonText: 'إعادة المحاولة',
+                    background: '#0f172a',
+                    color: '#fff'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetchQuran();
+                    }
+                });
+            }
+        }
+
+        function populateSelect() {
+            const select = document.getElementById("suraSelect");
+            if (!select) return;
+            select.innerHTML = '<option value="">اختر السورة...</option>';
+            window.quranData.forEach((sura, index) => {
+                const opt = document.createElement("option");
+                opt.value = index;
+                opt.textContent = `${sura.number}. ${sura.name}`;
+                select.appendChild(opt);
+            });
+
+            select.addEventListener("change", (e) => {
+                if (e.target.value !== "") loadSura(parseInt(e.target.value));
+            });
+
+            loadCurrentState();
+        }
+
+        function setDifficulty(level, isRestoring = false) {
+            document.querySelectorAll('[id^="btn-"]').forEach(btn => {
+                btn.className = "flex-1 py-2 rounded-lg text-sm transition-all text-gray-400 hover:text-white";
+            });
+            const activeBtn = document.getElementById(`btn-${level}`);
+            if (activeBtn) activeBtn.className = "flex-1 py-2 rounded-lg text-sm transition-all bg-ramadan-gold text-ramadan-dark font-bold";
+
+            if (level === 'easy') window.difficulty = 0.1;
+            else if (level === 'medium') window.difficulty = 0.3;
+            else if (level === 'hard') window.difficulty = 0.5;
+            else if (level === 'expert') window.difficulty = 0.8;
+            else if (level === 'master') window.difficulty = 1.0;
+
+            if (!isRestoring && window.quranData[window.currentSuraIndex]) {
+                const suraNumber = window.quranData[window.currentSuraIndex].number;
+                localStorage.removeItem(`quiz_progress_sura_${suraNumber}`);
+                renderTest(window.quranData[window.currentSuraIndex]);
+            }
+        }
+
+        function loadSura(index) {
+            window.currentSuraIndex = index;
+            const select = document.getElementById("suraSelect");
+            if (select) select.value = index;
+            const sura = window.quranData[index];
+            if (!sura) return;
+
+            const bismillah = document.getElementById("bismillah");
+            if (bismillah) {
+                if (sura.number === 9) bismillah.classList.add("hidden");
+                else bismillah.classList.remove("hidden");
+            }
+
+            renderTest(sura);
+        }
+
+        function renderTest(sura) {
+            const container = document.getElementById("versesContent");
+            if (!container) return;
+            container.innerHTML = "";
+
+            const key = `quiz_progress_sura_${sura.number}`;
+            const savedProgress = JSON.parse(localStorage.getItem(key) || '{"revealedWords":[], "hiddenPattern":[], "difficulty": -1}');
+            let hiddenPattern = savedProgress.hiddenPattern || [];
+
+            // Regenerate pattern if: no pattern exists, OR difficulty changed since last save, OR pattern is empty but difficulty > 0
+            if (hiddenPattern.length === 0 || savedProgress.difficulty !== window.difficulty) {
+                hiddenPattern = [];
+                savedProgress.revealedWords = []; 
+                let wordIdx = 0;
+                sura.ayahs.forEach((ayah) => {
+                    const words = ayah.text.split(' ');
+                    words.forEach(() => {
+                        if (Math.random() < window.difficulty) {
+                            hiddenPattern.push(wordIdx);
+                        }
+                        wordIdx++;
+                    });
+                });
+
+                // Guarantee at least one hidden word if difficulty is set
+                if (hiddenPattern.length === 0 && window.difficulty > 0 && wordIdx > 0) {
+                    hiddenPattern.push(Math.floor(Math.random() * wordIdx));
+                }
+
+                savedProgress.hiddenPattern = hiddenPattern;
+                savedProgress.difficulty = window.difficulty;
+                localStorage.setItem(key, JSON.stringify(savedProgress));
+            }
+
+            let wordIdx = 0;
+            sura.ayahs.forEach((ayah, ayahIndex) => {
+                const div = document.createElement("div");
+                div.className = "relative border-b border-white/5 pb-6 last:border-0";
+
+                const words = ayah.text.split(' ');
+                const processedText = words.map((word, wordIndex) => {
+                    const wordKey = `${ayahIndex}-${wordIndex}`;
+                    const wasRevealed = savedProgress.revealedWords.includes(wordKey);
+                    const shouldBeHidden = hiddenPattern.includes(wordIdx);
+                    wordIdx++;
+
+                    const cleanWord = normalizeText(word);
+                    
+                    let classes = ["quiz-word"];
+                    if (shouldBeHidden) classes.push("hidden-word");
+                    if (wasRevealed) classes.push("revealed", "passed");
+
+                    return `<span class="${classes.join(' ')}" 
+                                  data-ayah="${ayahIndex}" 
+                                  data-word="${wordIndex}" 
+                                  data-clean="${cleanWord}" 
+                                  onclick="handleWordClick(this, ${sura.number})">${word}</span>`;
+                }).join(' ');
+
+                div.innerHTML = `<div class="leading-loose font-amiri" dir="rtl">${processedText} <span class="text-ramadan-gold text-sm mx-2 font-sans border border-ramadan-gold/30 rounded-full w-8 h-8 inline-flex items-center justify-center">${ayah.numberInSurah}</span></div>`;
+                container.appendChild(div);
+            });
+
+            updateStatsUI(sura.number, savedProgress);
+            saveCurrentState();
+        }
+
+        function handleWordClick(element, suraNumber) {
+            if (element.classList.contains('hidden-word')) {
+                revealWord(element, suraNumber);
+            }
+        }
+
+        function revealWord(element, suraNumber) {
+            if (element.classList.contains('revealed')) return;
+            element.classList.add('revealed', 'passed');
+            
+            // Add animation class
+            element.classList.add('animate-pop');
+            
+            // UX: Auto-scroll to keep the current word in view
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Premium: Haptic Feedback
+            if ("vibrate" in navigator) navigator.vibrate(20);
+
+            // Visual Highlight (Pulse)
+            const statsPanel = document.getElementById('statsPanel');
+            if (statsPanel) {
+                statsPanel.classList.add('border-emerald-500', 'scale-[1.02]');
+                setTimeout(() => statsPanel.classList.remove('border-emerald-500', 'scale-[1.02]'), 400);
+            }
+
+            const ayahIndex = element.getAttribute('data-ayah');
+            const wordIndex = element.getAttribute('data-word');
+            const wordKey = `${ayahIndex}-${wordIndex}`;
+
+            const key = `quiz_progress_sura_${suraNumber}`;
+            const progress = JSON.parse(localStorage.getItem(key) || '{"revealedWords":[]}');
+            if (!progress.revealedWords.includes(wordKey)) {
+                progress.revealedWords.push(wordKey);
+                localStorage.setItem(key, JSON.stringify(progress));
+                updateStatsUI(suraNumber, progress);
+            }
+        }
+
+        function updateStatsUI(suraNumber, progress) {
+            const stats = progress || JSON.parse(localStorage.getItem(`quiz_progress_sura_${suraNumber}`) || '{"revealedWords":[], "hiddenPattern":[]}');
+            const hidden = stats.hiddenPattern.length;
+            const revealed = stats.revealedWords.length;
+            const remaining = Math.max(0, hidden - revealed);
+
+            const panel = document.getElementById('statsPanel');
+            if (panel) panel.classList.remove('hidden');
+
+            if (document.getElementById('statsHiddenCount')) document.getElementById('statsHiddenCount').textContent = hidden;
+            if (document.getElementById('statsRevealedCount')) document.getElementById('statsRevealedCount').textContent = revealed;
+            if (document.getElementById('statsRemainingCount')) document.getElementById('statsRemainingCount').textContent = remaining;
+
+            if (remaining === 0 && hidden > 0) {
+                // If microphone is on, stop it on completion
+                if (isListening) toggleListening();
+
+                // Premium: Confetti Celebration
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#fbbf24', '#ffffff', '#10b981']
+                });
+
+                Swal.fire({
+                    icon: 'success',
+                    title: '🎉 أحسنت!',
+                    text: 'أكملت السورة بنجاح وتحفظها بإتقان',
+                    background: '#0f172a', color: '#fff',
+                    confirmButtonColor: '#fbbf24',
+                    confirmButtonText: 'ما شاء الله'
+                });
+            }
+        }
+
+        function regenerateTest() {
+            const sura = window.quranData[window.currentSuraIndex];
+            if (sura) {
+                localStorage.removeItem(`quiz_progress_sura_${sura.number}`);
+                renderTest(sura);
+            }
+        }
+
+        function saveCurrentState() {
+            localStorage.setItem('quiz_current_state', JSON.stringify({
+                currentSuraIndex: window.currentSuraIndex,
+                difficulty: window.difficulty
+            }));
+        }
+
+        function loadCurrentState() {
+            const saved = localStorage.getItem('quiz_current_state');
+            if (saved) {
+                const state = JSON.parse(saved);
+                window.difficulty = state.difficulty || 0.1;
+                const difficultyMap = { 0.1: 'easy', 0.3: 'medium', 0.5: 'hard', 0.8: 'expert', 1.0: 'master' };
+                setDifficulty(difficultyMap[window.difficulty] || 'easy', true);
+                if (state.currentSuraIndex !== undefined) loadSura(state.currentSuraIndex);
+            } else {
+                // Default to easy highlighting
+                setDifficulty('easy', true);
+            }
+        }
+
+        function nextSura() { if (window.currentSuraIndex < 113) loadSura(window.currentSuraIndex + 1); }
+        function prevSura() { if (window.currentSuraIndex > 0) loadSura(window.currentSuraIndex - 1); }
+
+        // --- Voice Recognition Logic ---
+
+        function updateDebug(msg) {
+            const debugEl = document.getElementById('debugStatus');
+            if (debugEl) {
+                // debugEl.classList.remove('hidden'); // Keep hidden for user
+                // debugEl.textContent = msg;
+                console.log('[Voice Debug]:', msg);
+            }
+        }
+
+        function initSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                updateDebug("API Not Supported");
+                const btn = document.getElementById('micBtn');
+                if (btn) btn.style.display = 'none';
+                return;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.lang = 'ar-SA';
+            
+            // iOS Safari handles 'continuous' poorly, often stopping after one sentence.
+            // We set it to false for mobile to force manual restart loop which is more stable.
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            recognition.continuous = !isMobile; 
+            recognition.interimResults = true;
+
+            recognition.onstart = () => {
+                isListening = true;
+                updateMicUI(true);
+                updateDebug("Started Listening");
+            };
+
+            recognition.onend = () => {
+                updateDebug("Stopped Listening");
+                // Only restart if we are still supposed to be listening AND page is visible
+                if (isListening && !document.hidden) {
+                    updateDebug("Auto-restarting...");
+                    // Small delay prevents "speech recognition service error" on iOS
+                    setTimeout(() => {
+                        try {
+                            if (isListening && !document.hidden && recognition) recognition.start();
+                        } catch (e) {
+                            console.log("Recognition restart suppressed");
+                        }
+                    }, 50);
+                } else {
+                    isListening = false;
+                    updateMicUI(false);
+                }
+            };
+
+            recognition.onresult = (event) => {
+                let transcript = "";
+                // Premium: Use full transcript to ensure sequential matching against unpassed words
+                for (let i = 0; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                
+                updateDebug(`Heard: "${transcript}"`);
+                
+                const spokenWords = transcript.trim().split(/\s+/).map(w => normalizeText(w));
+                if (spokenWords.length > 0) {
+                    checkSpokenWords(spokenWords);
+                }
+            };
+
+            recognition.onerror = (event) => {
+                updateDebug(`Error: ${event.error}`);
+
+                // Ignore 'no-speech' (silence) and 'aborted' (common on iOS when restarting)
+                if (event.error === 'no-speech' || event.error === 'aborted') {
+                    return; 
+                }
+
+                let errorMessage = 'يرجى السماح بالوصول للميكروفون لاستخدام هذه الميزة';
+                let criticalError = false;
+                
+                if (event.error === 'not-allowed') {
+                    // Check if it's due to insecure origin (HTTP vs HTTPS)
+                    if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+                        errorMessage = 'عذراً، المتصفح يحظر الميكروفون لأن الاتصال غير آمن (HTTP). يرجى استخدام HTTPS أو Localhost.';
+                    }
+                    criticalError = true;
+                } else if (event.error === 'service-not-allowed') {
+                    errorMessage = 'المتصفح لا يدعم التعرف على الصوت في هذا الوضع. جرب متصفح Chrome.';
+                    criticalError = true;
+                }
+
+                if (criticalError) {
+                    isListening = false;
+                    updateMicUI(false);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'الوصول مرفوض',
+                        text: errorMessage,
+                        background: '#0f172a', color: '#fff'
+                    });
+                }
+            };
+        }
+
+        function toggleListening() {
+            if (!recognition) return;
+
+            if (isListening) {
+                stopRecognition();
+            } else {
+                try {
+                    recognition.start();
+                    isListening = true; // Set true optimistically
+                    updateMicUI(true); // Update UI immediately for feedback
+                } catch (e) {
+                    console.error("Could not start recognition:", e);
+                }
+            }
+        }
+
+        function updateMicUI(listening) {
+            const btn = document.getElementById('micBtn');
+            const pulse = document.getElementById('micPulse');
+            const indicator = document.getElementById('listeningIndicator');
+            
+            if (listening) {
+                btn.classList.add('bg-red-500', 'text-white', 'listening');
+                btn.classList.remove('bg-ramadan-gold', 'text-ramadan-dark');
+                pulse.classList.add('animate-ping', 'opacity-75');
+                pulse.classList.remove('opacity-0');
+                indicator.classList.remove('hidden', 'opacity-0');
+            } else {
+                btn.classList.remove('bg-red-500', 'text-white', 'listening');
+                btn.classList.add('bg-ramadan-gold', 'text-ramadan-dark');
+                pulse.classList.remove('animate-ping', 'opacity-75');
+                pulse.classList.add('opacity-0');
+                indicator.classList.add('opacity-0');
+                setTimeout(() => indicator.classList.add('hidden'), 300);
+            }
+        }
+
+        // --- Premium Utilities ---
+
+        // Expanded Normalization for Matching
+        function normalizeText(text) {
+            if (!text) return "";
+            
+            // Convert digits to words (Basic support for common numbers if output as digits)
+            const numMap = {'0':'صفر','1':'واحد','2':'اثنين','3':'ثلاثه','4':'اربعة','5':'خمسة','6':'ستة','7':'سبعة','8':'ثمانية','9':'تسعة'};
+            let normalized = text.toString().replace(/[0-9]/g, m => numMap[m]);
+
+            normalized = normalized
+                .replace(/(آ|إ|أ)/g, 'ا') 
+                .replace(/ء/g, '')      
+                .replace(/ئ/g, 'ي')     
+                .replace(/ؤ/g, 'و')     
+                .replace(/ى[\u0670]/g, 'ى') 
+                .replace(/[\u0671\u0670]/g, 'ا') 
+                .replace(/\u0640/g, ''); 
+
+            normalized = normalized.replace(/[\u064B-\u065F\u06D6-\u06ED]/g, '');
+
+            normalized = normalized
+                .replace(/ة/g, 'ه')     
+                .replace(/ى/g, 'ا')     
+                .replace(/[^\u0600-\u06FF\s]/g, '') 
+                .trim();
+            
+            return normalized;
+        }
+
+        // --- Advanced Fuzzy Matching ---
+        
+        function levenshteinDistance(a, b) {
+            if (a.length === 0) return b.length;
+            if (b.length === 0) return a.length;
+
+            const matrix = [];
+
+            // increment along the first column of each row
+            for (let i = 0; i <= b.length; i++) {
+                matrix[i] = [i];
+            }
+
+            // increment each column in the first row
+            for (let j = 0; j <= a.length; j++) {
+                matrix[0][j] = j;
+            }
+
+            // Fill in the rest of the matrix
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1, // substitution
+                            Math.min(
+                                matrix[i][j - 1] + 1, // insertion
+                                matrix[i - 1][j] + 1 // deletion
+                            )
+                        );
+                    }
+                }
+            }
+
+            return matrix[b.length][a.length];
+        }
+
+        function isFuzzyMatch(spoken, target) {
+            if (!spoken || !target) return false;
+            
+            // 1. Exact match (fastest)
+            if (spoken === target) return true;
+
+            // 2. Contains match (for short phrases)
+            if (spoken.length > target.length && spoken.includes(target)) return true;
+
+            // 3. Common Prefixes Handling
+            const prefixes = ['ال', 'و', 'ف', 'ب', 'ل'];
+            for (const p of prefixes) {
+                if (spoken === p + target || target === p + spoken) return true;
+            }
+
+            // 4. Skeleton Matching (Robust Consonants)
+            const getSkeleton = (txt) => txt.replace(/[اويىءئؤ]/g, '');
+            const spokenSkel = getSkeleton(spoken);
+            const targetSkel = getSkeleton(target);
+            if (spokenSkel === targetSkel && spokenSkel.length > 0) return true;
+
+            // 5. Levenshtein Distance
+            const dist = levenshteinDistance(spoken, target);
+            const tolerance = target.length <= 4 ? 1 : 2; 
+            
+            return dist <= tolerance;
+        }
+
+        function checkSpokenWords(spokenWords) {
+            const allWords = Array.from(document.querySelectorAll('.quiz-word:not(.passed)'));
+            if (allWords.length === 0) return;
+
+            let spokenIndex = 0;
+            let hiddenIndex = 0; // Index in allWords
+            
+            while (hiddenIndex < allWords.length && spokenIndex < spokenWords.length) {
+                const currentEl = allWords[hiddenIndex];
+                const targetClean = currentEl.getAttribute('data-clean');
+                
+                let foundMatch = false;
+                const lookaheadLimit = 3; 
+
+                for (let i = 0; i < lookaheadLimit; i++) {
+                    if (spokenIndex + i >= spokenWords.length) break;
+                    
+                    const wordToCheck = spokenWords[spokenIndex + i];
+                    const nextWord = spokenWords[spokenIndex + i + 1] || "";
+                    const joinedWord = wordToCheck + nextWord;
+                    
+                    if (isFuzzyMatch(wordToCheck, targetClean) || (joinedWord && isFuzzyMatch(joinedWord, targetClean))) {
+                        const suraNumber = window.quranData[window.currentSuraIndex].number;
+                        
+                        // If it's a hidden word, reveal it properly
+                        if (currentEl.classList.contains('hidden-word')) {
+                            revealWord(currentEl, suraNumber);
+                        } else {
+                            // It's a visible word, just mark as passed
+                            currentEl.classList.add('passed');
+                        }
+                        
+                        let consumed = (joinedWord && isFuzzyMatch(joinedWord, targetClean)) ? 2 : 1;
+                        hiddenIndex++; 
+                        spokenIndex += (i + consumed);
+                        foundMatch = true;
+                        break;
+                    }
+                }
+                
+                if (!foundMatch) {
+                    // --- Strategy 2: Smart Skip-Ahead ---
+                    // If the current word is stuck, check if the spoken word matches ANY of the next 5 words.
+                    // This allows the user to continue reading even if the mic fails on one word.
+                    const targetLookaheadLimit = 5; 
+                    for (let j = 1; j <= targetLookaheadLimit; j++) {
+                        if (hiddenIndex + j >= allWords.length) break;
+                        
+                        const nextTargetEl = allWords[hiddenIndex + j];
+                        const nextTargetClean = nextTargetEl.getAttribute('data-clean');
+
+                        if (isFuzzyMatch(spokenWords[spokenIndex], nextTargetClean)) {
+                            const suraNumber = window.quranData[window.currentSuraIndex].number;
+                            
+                            // Pass (skip) everything between current and the matched word
+                            for (let k = 0; k <= j; k++) {
+                                const skipEl = allWords[hiddenIndex + k];
+                                if (skipEl.classList.contains('hidden-word')) {
+                                    revealWord(skipEl, suraNumber);
+                                } else {
+                                    skipEl.classList.add('passed');
+                                }
+                            }
+
+                            hiddenIndex += (j + 1);
+                            spokenIndex++;
+                            foundMatch = true;
+                            break;
+                        }
+                    }
+
+                    if (!foundMatch) {
+                        spokenIndex++; 
+                    }
+                }
+            }
+        }
+
+    </script>
+    <div id="global-player"></div>
+</body>
+
+</html>

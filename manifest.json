@@ -1,0 +1,95 @@
+{
+  "name": "رمضان كريم - تطبيق إسلامي شامل",
+  "short_name": "رمضان كريم",
+  "description": "تطبيق إسلامي شامل يحتوي على القرآن الكريم بالتفسير، مواقيت الصلاة، الأذكار اليومية، القراء المشهورين، السبحة الإلكترونية، تتبع العبادات، حاسبة الزكاة، والمزيد - كل ما تحتاجه في رمضان وطوال العام",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#fbbf24",
+  "orientation": "portrait-primary",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "lifestyle",
+    "education",
+    "books"
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "القرآن الكريم",
+      "short_name": "القرآن",
+      "description": "قراءة القرآن الكريم",
+      "url": "/quran.html",
+      "icons": [
+        {
+          "src": "images/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "الأذكار اليومية",
+      "short_name": "الأذكار",
+      "description": "حصن المسلم",
+      "url": "/adhkar.html",
+      "icons": [
+        {
+          "src": "images/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "مواقيت الصلاة",
+      "short_name": "الصلاة",
+      "description": "عرض مواقيت الصلاة",
+      "url": "/prayer.html",
+      "icons": [
+        {
+          "src": "images/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "تتبع عبادتك",
+      "short_name": "التتبع",
+      "description": "متابعة الصلاة والصيام",
+      "url": "/tracker.html",
+      "icons": [
+        {
+          "src": "images/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "صدقة جارية",
+      "short_name": "الصدقة",
+      "description": "صمم بطاقة صدقة جارية",
+      "url": "/sadaqah.html",
+      "icons": [
+        {
+          "src": "images/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

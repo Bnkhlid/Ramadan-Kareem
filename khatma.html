@@ -1,0 +1,148 @@
+﻿<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="description" content="شارك في الختمة الجماعية للقرآن الكريم في رمضان" />
+    <title>رمضان كريم | الختمة الجماعية</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="رمضان كريم">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&family=Scheherazade+New:wght@400;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/share-utils.js?v=v_spa_fixed_v19"></script>
+    <script src="js/main.js?v=v_spa_fixed_v19"></script>
+    <script src="js/notifications.js?v=v_spa_fixed_v19"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+    <link rel="stylesheet" href="css/style.css?v=v_spa_fixed_v19">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ramadan-gold': '#fbbf24',
+                        'ramadan-dark': '#0f172a',
+                        'ramadan-green': '#064e3b',
+                    },
+                    fontFamily: {
+                        'amiri': ['Amiri', 'serif'],
+                        'tajawal': ['Tajawal', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-ramadan-dark text-white font-tajawal overflow-x-hidden">
+
+    <!-- Nav Placeholder -->
+    <div id="nav-placeholder"></div>
+    <div id="page-content-wrapper">
+        <section id="khatma" class="py-24 min-h-screen relative overflow-hidden">
+            <div class="absolute inset-0 stars opacity-40"></div>
+            <div class="absolute inset-0 islamic-pattern opacity-10"></div>
+
+            <div class="container mx-auto px-4 relative z-10 text-center">
+                <h1 class="text-3xl md:text-5xl font-bold font-amiri text-ramadan-gold mb-6">
+                    الختمة الجماعية العالمية
+                </h1>
+                <p class="text-gray-300 max-w-2xl mx-auto text-lg mb-10 leading-relaxed">
+                    شارك آلاف المسلمين حول العالم في ختم القرآن الكريم. كل جزء تقرأه يساهم في زيادة عدد الختمات
+                    المكتملة.
+                </p>
+
+                <!-- Global Counter -->
+                <div
+                    class="glass-effect p-8 rounded-3xl border border-ramadan-gold/30 max-w-2xl mx-auto mb-16 relative overflow-hidden group hover:border-ramadan-gold/60 transition-colors">
+                    <div
+                        class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-ramadan-gold to-transparent opacity-50">
+                    </div>
+
+                    <div class="text-gray-400 text-sm md:text-base mb-2">عدد الختمات المكتملة حول العالم</div>
+                    <div class="text-6xl md:text-8xl font-bold text-white font-amiri tabular-nums tracking-tighter"
+                        id="globalKhatmaCount">
+                        1,523
+                    </div>
+                    <div
+                        class="mt-4 flex flex-col md:flex-row items-center justify-center gap-2 text-sm text-ramadan-gold/80">
+                        <span class="flex items-center gap-2"><i
+                                class="fas fa-circle text-[10px] animate-pulse text-green-500"></i> تحديث مباشر</span>
+                        <span class="hidden md:inline text-gray-600">|</span>
+                        <span>شارك واكسب الأجر</span>
+                    </div>
+                </div>
+
+                <!-- User Contribution -->
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-2xl font-bold text-ramadan-gold mb-6 flex items-center justify-center gap-3">
+                        <i class="fas fa-book-open"></i> مساهمتك الشخصية
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+
+                        <!-- Progress Card -->
+                        <div class="glass-effect p-6 rounded-2xl border border-white/10 text-right">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-gray-300 font-bold">الأجزاء التي قرأتها:</span>
+                                <span class="text-2xl font-bold text-ramadan-gold font-amiri" id="userJuzCount">0</span>
+                            </div>
+                            <!-- Juz Grid -->
+                            <div class="grid grid-cols-6 gap-2" id="juzGrid">
+                                <!-- Populated by JS: 30 Juz circles -->
+                            </div>
+                        </div>
+
+                        <!-- Action Card -->
+                        <div
+                            class="glass-effect p-6 rounded-2xl border border-white/10 flex flex-col items-center justify-center text-center h-full">
+                            <div
+                                class="w-16 h-16 rounded-full bg-ramadan-gold/10 flex items-center justify-center mb-4">
+                                <i class="fas fa-check text-2xl text-ramadan-gold"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-2">سجل إنجازك اليوم</h3>
+                            <p class="text-gray-400 text-sm mb-6">هل أتممت قراءة جزء جديد؟ سلمه الآن ليضاف للعداد
+                                العالمي.
+                            </p>
+
+                            <button onclick="submitJuz()"
+                                class="w-full bg-ramadan-gold text-ramadan-dark font-bold py-3 px-6 rounded-xl hover:bg-white transition-all shadow-lg shadow-ramadan-gold/20 flex items-center justify-center gap-2">
+                                <i class="fas fa-plus"></i> تسليم جزء
+                            </button>
+                            <p id="submitMsg" class="text-green-400 text-sm mt-3 opacity-0 transition-opacity">تمت
+                                الإضافة
+                                بنجاح! تقبل الله.</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <script src="js/khatma.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            injectNav('khatma');
+            injectFooter();
+            initKhatma();
+        });
+    </script>
+    <div id="global-player"></div>
+</body>
+
+</html>
+

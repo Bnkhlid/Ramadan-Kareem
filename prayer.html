@@ -1,0 +1,272 @@
+﻿<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>رمضان كريم | مواقيت الصلاة</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="رمضان كريم">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&family=Scheherazade+New:wght@400;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/share-utils.js?v=v_spa_fixed_v19"></script>
+    <script src="js/main.js?v=v_spa_fixed_v19"></script>
+    <script src="js/notifications.js?v=v_spa_fixed_v19"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+    <link rel="stylesheet" href="css/style.css?v=v_spa_fixed_v19">
+    <style>
+        /* FORCE DARK BACKGROUND - OVERRIDE EVERYTHING */
+        body {
+            background: #0f172a !important;
+            background-color: #0f172a !important;
+            background-image: none !important;
+        }
+
+        body.theme-morning,
+        body.theme-afternoon,
+        body.theme-sunset,
+        body.theme-night {
+            background: #0f172a !important;
+            background-color: #0f172a !important;
+            background-image: none !important;
+        }
+    </style>
+
+
+</head>
+
+<body class="bg-ramadan-dark text-white font-tajawal"
+    style="background-color: #0f172a !important; background: #0f172a !important;">
+    <div id="nav-placeholder"></div>
+    <div id="page-content-wrapper">
+        <section id="prayer" class="py-24 min-h-screen relative overflow-hidden">
+            <!-- Background Elements -->
+            <div class="absolute inset-0 stars opacity-30"></div>
+            <div class="absolute inset-0 islamic-pattern opacity-10"></div>
+
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="text-center mb-8">
+                    <span class="text-ramadan-gold text-sm font-bold tracking-wider">إن الصلاة كانت على المؤمنين كتاباً
+                        موقوتاً</span>
+                    <h2 class="text-3xl lg:text-5xl font-bold mt-2 font-amiri text-white">مواقيت الصلاة</h2>
+                    <div class="mt-4 flex items-center justify-center gap-2 text-gray-400">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="locationName">جاري تحديد الموقع...</span>
+                    </div>
+                </div>
+
+                <div id="prayerLoader" class="text-center py-12">
+                    <div class="loader mx-auto mb-4"></div>
+                    <p>جاري جلب المواقيت...</p>
+                </div>
+
+                <div id="prayerCards"
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-6xl mx-auto hidden">
+                    <!-- Fajr -->
+                    <div id="card-Fajr"
+                        class="prayer-card glass-effect rounded-2xl p-6 text-center border-t-4 border-blue-400">
+                        <div
+                            class="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-400/20 flex items-center justify-center">
+                            <i class="fas fa-cloud-sun text-2xl text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">الفجر</h3>
+                        <div class="text-3xl font-bold text-white mb-1" id="time-Fajr">--:--</div>
+                        <div class="text-xs text-gray-400">صباحاً</div>
+                    </div>
+
+                    <!-- Dhuhr -->
+                    <div id="card-Dhuhr"
+                        class="prayer-card glass-effect rounded-2xl p-6 text-center border-t-4 border-yellow-400">
+                        <div
+                            class="w-16 h-16 mx-auto mb-4 rounded-full bg-yellow-400/20 flex items-center justify-center">
+                            <i class="fas fa-sun text-2xl text-yellow-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">الظهر</h3>
+                        <div class="text-3xl font-bold text-white mb-1" id="time-Dhuhr">--:--</div>
+                        <div class="text-xs text-gray-400">ظهراً</div>
+                    </div>
+
+                    <!-- Asr -->
+                    <div id="card-Asr"
+                        class="prayer-card glass-effect rounded-2xl p-6 text-center border-t-4 border-orange-400">
+                        <div
+                            class="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-400/20 flex items-center justify-center">
+                            <i class="fas fa-cloud text-2xl text-orange-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">العصر</h3>
+                        <div class="text-3xl font-bold text-white mb-1" id="time-Asr">--:--</div>
+                        <div class="text-xs text-gray-400">عصراً</div>
+                    </div>
+
+                    <!-- Maghrib -->
+                    <div id="card-Maghrib"
+                        class="prayer-card glass-effect rounded-2xl p-6 text-center border-t-4 border-ramadan-gold">
+                        <div
+                            class="w-16 h-16 mx-auto mb-4 rounded-full bg-ramadan-gold/20 flex items-center justify-center">
+                            <i class="fas fa-moon text-2xl text-ramadan-gold"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 text-ramadan-gold">المغرب</h3>
+                        <div class="text-3xl font-bold text-white mb-1" id="time-Maghrib">--:--</div>
+                        <div class="text-xs text-gray-400">مساءً</div>
+                    </div>
+
+                    <!-- Isha -->
+                    <div id="card-Isha"
+                        class="prayer-card glass-effect rounded-2xl p-6 text-center border-t-4 border-indigo-400">
+                        <div
+                            class="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-400/20 flex items-center justify-center">
+                            <i class="fas fa-star text-2xl text-indigo-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">العشاء</h3>
+                        <div class="text-3xl font-bold text-white mb-1" id="time-Isha">--:--</div>
+                        <div class="text-xs text-gray-400">مساءً</div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-12">
+                    <button onclick="fetchPrayerTimes(true)"
+                        class="px-6 py-2 rounded-full bg-white/10 hover:bg-white/20 transition-all text-sm">
+                        <i class="fas fa-sync-alt ml-2"></i> تحديث الموقع والمواقيت
+                    </button>
+                    <p class="text-xs text-gray-500 mt-4">المواقيت حسب الهيئة العامة للمساحة المصرية (أو التقويم المحلي
+                        الأقرب لموقعك)</p>
+                </div>
+
+            </div>
+        </section>
+    </div>
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            injectNav('prayer');
+            injectFooter();
+            fetchPrayerTimes();
+        });
+
+        async function fetchPrayerTimes(forceLocation = false) {
+            document.getElementById('prayerLoader').classList.remove('hidden');
+            document.getElementById('prayerCards').classList.add('hidden');
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const { latitude, longitude } = position.coords;
+                        await getTimes(latitude, longitude);
+                    },
+                    (error) => {
+                        console.warn("Location access denied or failed", error);
+                        // Fallback to Cairo
+                        getTimes(30.0444, 31.2357, "القاهرة (افتراضي)");
+                        Swal.fire({
+                            title: 'تنبيه',
+                            text: 'لم نتمكن من تحديد موقعك بدقة. نعرض مواقيت القاهرة بشكل افتراضي.',
+                            icon: 'info'
+                        });
+                    }
+                );
+            } else {
+                getTimes(30.0444, 31.2357, "القاهرة (افتراضي)");
+            }
+        }
+
+        async function getTimes(lat, lng, cityNameOverride) {
+            try {
+                // Method 5 is Egyptian General Authority of Survey (Egyptian Awqaf uses this basis)
+                // Use current date
+                const date = new Date();
+                const d = date.getDate();
+                const m = date.getMonth() + 1;
+                const y = date.getFullYear();
+
+                const url = `https://api.aladhan.com/v1/timings/${d}-${m}-${y}?latitude=${lat}&longitude=${lng}&method=5`;
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (data.code === 200) {
+                    const timings = data.data.timings;
+
+                    updateTime('Fajr', timings.Fajr);
+                    updateTime('Dhuhr', timings.Dhuhr);
+                    updateTime('Asr', timings.Asr);
+                    updateTime('Maghrib', timings.Maghrib);
+                    updateTime('Isha', timings.Isha);
+
+                    // Reverse geocoding for display name if not provided
+                    if (cityNameOverride) {
+                        document.getElementById('locationName').textContent = cityNameOverride;
+                    } else {
+                        document.getElementById('locationName').textContent = data.data.meta.timezone; // Simple fallback
+                        // Optionally fetch city name from another API, but Aladhan meta provides timezone or we can just say "موقعك الحالي"
+                        document.getElementById('locationName').textContent = "موقعك الحالي";
+                    }
+
+                    document.getElementById('prayerLoader').classList.add('hidden');
+                    document.getElementById('prayerCards').classList.remove('hidden');
+
+                    highlightNextPrayer(timings);
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('prayerLoader').innerHTML = '<p class="text-red-400">حدث خطأ أثناء جلب المواقيت.</p>';
+            }
+        }
+
+        function updateTime(id, timeStr) {
+            // timeStr is usually "HH:MM" (24h)
+            // Convert to 12h Arabic
+            const [fullStr] = timeStr.split(' '); // Remove (EEST) if present
+            let [h, m] = fullStr.split(':');
+            h = parseInt(h);
+            const suffix = h >= 12 ? 'مساءً' : 'صباحاً';
+            const h12 = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+
+            document.getElementById(`time-${id}`).textContent = `${h12}:${m}`;
+        }
+
+        function highlightNextPrayer(timings) {
+            // Logic to find next prayer and add .next-prayer class
+            // Simple implementation: Compare current HH:MM with prayer times
+            const now = new Date();
+            const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+            const prayers = [
+                { id: 'Fajr', time: timings.Fajr },
+                { id: 'Dhuhr', time: timings.Dhuhr },
+                { id: 'Asr', time: timings.Asr },
+                { id: 'Maghrib', time: timings.Maghrib },
+                { id: 'Isha', time: timings.Isha }
+            ];
+
+            // Reset classes
+            document.querySelectorAll('.prayer-card').forEach(c => c.classList.remove('next-prayer'));
+
+            let found = false;
+            for (const p of prayers) {
+                const [h, m] = p.time.split(':').map(Number);
+                const pMinutes = h * 60 + m;
+                if (pMinutes > nowMinutes) {
+                    document.getElementById(`card-${p.id}`).classList.add('next-prayer');
+                    found = true;
+                    break;
+                }
+            }
+
+            // If not found, next is Fajr tomorrow
+            if (!found) {
+                document.getElementById('card-Fajr').classList.add('next-prayer');
+            }
+        }
+    </script>
+    <div id="global-player"></div>
+</body>
+
+</html>
+

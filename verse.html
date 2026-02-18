@@ -1,0 +1,216 @@
+﻿<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>رمضان كريم | آية عشوائية</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="رمضان كريم">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/share-utils.js?v=v_spa_fixed_v19"></script>
+    <script src="js/main.js?v=v_spa_fixed_v19"></script>
+    <script src="js/notifications.js?v=v_spa_fixed_v19"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css">
+    <link rel="stylesheet" href="css/style.css?v=v_spa_fixed_v19">
+</head>
+
+<body class="bg-ramadan-dark text-white font-tajawal">
+    <div id="nav-placeholder"></div>
+    <div id="page-content-wrapper">
+        <section class="py-32 min-h-screen relative overflow-hidden flex items-center justify-center">
+            <!-- Background Elements -->
+            <div class="absolute inset-0 stars opacity-30"></div>
+            <div class="absolute inset-0 islamic-pattern opacity-10"></div>
+
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-4xl mx-auto px-2">
+                    <div class="text-center mb-8">
+                        <span class="text-ramadan-gold text-sm font-bold tracking-wider">تدبر واعتبر</span>
+                        <h2 class="text-3xl lg:text-5xl font-bold mt-2 font-amiri text-white">آية عشوائية من القرآن</h2>
+                    </div>
+
+                    <div
+                        class="glass-effect rounded-3xl p-6 md:p-8 lg:p-12 relative overflow-hidden group hover:border-ramadan-gold/30 transition-all duration-500 border border-ramadan-gold/20 shadow-2xl">
+                        <div
+                            class="absolute -top-10 -right-10 text-9xl text-white/5 font-amiri opacity-20 pointer-events-none">
+                            ❄</div>
+
+                        <div class="relative z-10 text-center">
+                            <div id="randomVerseContent" aria-live="polite">
+                                <div id="loader" class="hidden mb-6">
+                                    <div class="loader mx-auto"></div>
+                                </div>
+
+                                <blockquote
+                                    class="text-2xl md:text-3xl lg:text-4xl font-amiri mb-8 text-gray-100 quran-text px-4"
+                                    style="line-height: 2.5; word-spacing: 0.4em; letter-spacing: 0.02em;"
+                                    id="randomAyah">
+                                    جاري تحميل الآية...
+                                </blockquote>
+
+                                <div class="flex items-center justify-center gap-2 mb-8">
+                                    <div class="h-px w-12 bg-ramadan-gold/50"></div>
+                                    <div class="text-ramadan-gold font-bold text-lg md:text-xl" id="randomReference">
+                                    </div>
+                                    <div class="h-px w-12 bg-ramadan-gold/50"></div>
+                                </div>
+
+                                <div class="flex justify-center gap-4">
+                                    <button onclick="loadRandomVerse()"
+                                        class="px-8 py-3 rounded-full bg-ramadan-gold text-ramadan-dark font-bold hover:bg-white transition-all flex items-center gap-3 shadow-lg shadow-ramadan-gold/20 transform hover:-translate-y-1">
+                                        <i class="fas fa-sync-alt"></i> آية أخرى
+                                    </button>
+
+                                    <!-- Share Button -->
+                                    <button onclick="shareCurrentVerse()"
+                                        class="px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all flex items-center justify-center"
+                                        title="مشاركة">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+
+                                    <!-- Bookmark Button -->
+                                    <button id="verseBookmarkBtn" onclick="toggleVerseBookmark()"
+                                        class="px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all flex items-center justify-center"
+                                        title="حفظ في المفضلة">
+                                        <i class="far fa-heart" id="verseBookmarkIcon"></i>
+                                    </button>
+                                    <!-- Copy Button -->
+                                    <button onclick="copyVerse()"
+                                        class="px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all flex items-center justify-center"
+                                        title="نسخ الآية">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            injectNav('verse'); // Assuming 'verse' key for active state if added to menu
+            injectFooter();
+            loadRandomVerse();
+        });
+
+        var currentAyahData = null;
+
+        async function loadRandomVerse() {
+            const ayahEl = document.getElementById("randomAyah");
+            const refEl = document.getElementById("randomReference");
+            const loader = document.getElementById("loader");
+
+            // Show loader, hide text temporarily or dim it
+            ayahEl.style.opacity = "0.5";
+
+            try {
+                const randomNum = Math.floor(Math.random() * 6236) + 1;
+                const res = await fetch(`https://api.alquran.cloud/v1/ayah/${randomNum}/quran-uthmani`);
+                const data = await res.json();
+
+                if (data.code === 200) {
+                    const ayah = data.data;
+                    currentAyahData = ayah; // Store for bookmarking
+
+                    ayahEl.innerHTML = `"${ayah.text}"`;
+                    refEl.textContent = `سورة ${ayah.surah.name} - الآية ${ayah.numberInSurah}`;
+                    ayahEl.style.opacity = "1";
+
+                    // Optional: Store for Copy
+                    ayahEl.dataset.text = `${ayah.text}\n[${ayah.surah.name}: ${ayah.numberInSurah}]`;
+
+                    updateBookmarkUI();
+                }
+            } catch (e) {
+                console.error(e);
+                ayahEl.textContent = "حدث خطأ أثناء تحميل الآية. يرجى المحاولة مرة أخرى.";
+                ayahEl.style.opacity = "1";
+            }
+        }
+
+        function getBookmarks() {
+            return JSON.parse(localStorage.getItem('ramadan_bookmarks') || '[]');
+        }
+
+        function updateBookmarkUI() {
+            if (!currentAyahData) return;
+            const bookmarks = getBookmarks();
+            const isBookmarked = bookmarks.some(b => b.type === 'quran' && b.suraNumber === currentAyahData.surah.number && b.ayahNumber === currentAyahData.numberInSurah);
+            const icon = document.getElementById('verseBookmarkIcon');
+            const btn = document.getElementById('verseBookmarkBtn');
+
+            if (isBookmarked) {
+                icon.className = 'fas fa-heart text-red-500';
+                btn.classList.add('border-red-500/50');
+            } else {
+                icon.className = 'far fa-heart';
+                btn.classList.remove('border-red-500/50');
+            }
+        }
+
+        function toggleVerseBookmark() {
+            if (!currentAyahData) return;
+
+            let bookmarks = getBookmarks();
+            const index = bookmarks.findIndex(b => b.type === 'quran' && b.suraNumber === currentAyahData.surah.number && b.ayahNumber === currentAyahData.numberInSurah);
+
+            if (index > -1) {
+                bookmarks.splice(index, 1);
+            } else {
+                bookmarks.push({
+                    type: 'quran',
+                    suraNumber: currentAyahData.surah.number,
+                    suraName: currentAyahData.surah.name,
+                    ayahNumber: currentAyahData.numberInSurah,
+                    text: currentAyahData.text
+                });
+            }
+
+            localStorage.setItem('ramadan_bookmarks', JSON.stringify(bookmarks));
+            updateBookmarkUI();
+        }
+
+        function copyVerse() {
+            const text = document.getElementById("randomAyah").dataset.text;
+            if (text) {
+                navigator.clipboard.writeText(text).then(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'تم النسخ',
+                        showConfirmButton: false,
+                        timer: 1000,
+                        background: '#0f172a',
+                        color: '#fff',
+                        toast: true,
+                        position: 'top-end'
+                    });
+                });
+            }
+        }
+
+        function shareCurrentVerse() {
+            if (!currentAyahData) return;
+            // Format text and source
+            const text = currentAyahData.text;
+            const source = `سورة ${currentAyahData.surah.name} - آية ${currentAyahData.numberInSurah}`;
+            showShareOptions(text, source);
+        }
+    </script>
+    <div id="global-player"></div>
+</body>
+
+</html>
+
